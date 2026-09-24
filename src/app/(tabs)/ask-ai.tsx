@@ -1,4 +1,4 @@
-import { BotIcon, SendIcon, SparklesIcon } from "lucide-react-native";
+import { BotIcon, SendIcon } from "lucide-react-native";
 import { ScrollView, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
@@ -12,11 +12,6 @@ export default function AskAIScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="flex-1 px-4 pt-6 pb-4">
-        <View className="flex-row items-center gap-2 mb-6">
-          <SparklesIcon size={24} className="text-primary" />
-          <Text className="text-foreground text-2xl font-serif">Ask AI</Text>
-        </View>
-
         <ScrollView
           className="flex-1 mb-4"
           showsVerticalScrollIndicator={false}
@@ -25,8 +20,8 @@ export default function AskAIScreen() {
           <View className="gap-4">
             <View className="bg-secondary p-4 rounded-2xl rounded-tl-sm self-start max-w-[85%]">
               <Text className="text-foreground">
-                Hello! I'm your local AI financial assistant. I run 100% on your
-                device.
+                Hello! I'm Penny, your local AI financial assistant. I run 100%
+                on your device.
               </Text>
             </View>
 

@@ -9,12 +9,17 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerTitleStyle: { fontFamily: "Rye_400Regular", fontSize: 24 },
+        headerStyle: { backgroundColor: isDark ? "#0D0D0D" : "#E8DCC4" },
+        headerTintColor: isDark ? "#E8DCC4" : "#3A3A3C",
+        headerShadowVisible: false,
+        tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: isDark ? "#000000" : "#ffffff",
-          borderTopColor: isDark ? "#333333" : "#e5e5e5",
+          backgroundColor: isDark ? "#0D0D0D" : "#E8DCC4",
+          borderTopColor: isDark ? "#3A3A3C" : "#d5c8b0",
         },
-        tabBarActiveTintColor: isDark ? "#ffffff" : "#000000",
+        tabBarActiveTintColor: "#6C391A",
         tabBarInactiveTintColor: "#888888",
       }}
     >
@@ -35,7 +40,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="ask-ai"
         options={{
-          title: "Ask AI",
+          title: "Penny",
           tabBarIcon: ({ color }) => <BotIcon color={color} size={24} />,
         }}
       />

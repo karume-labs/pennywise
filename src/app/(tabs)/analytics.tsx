@@ -6,10 +6,6 @@ export default function AnalyticsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <ScrollView className="flex-1 px-4 pt-6">
-        <Text className="text-foreground text-2xl font-serif mb-6">
-          Analytics
-        </Text>
-
         {/* Placeholder for chart */}
         <View className="bg-card border border-border rounded-3xl p-6 h-64 items-center justify-center mb-6 shadow-sm">
           <Text className="text-muted-foreground text-center mb-2">

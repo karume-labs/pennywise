@@ -5,6 +5,7 @@ import { Stack } from "expo-router";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
 import { NAV_THEME } from "@/lib/theme";
 
@@ -61,10 +62,12 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={NAV_THEME[theme ?? "light"]}>
       <StatusBar style={theme === "dark" ? "light" : "dark"} />
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-      <PortalHost />
+      <SafeAreaProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+        <PortalHost />
+      </SafeAreaProvider>
     </ThemeProvider>
   );
 }
