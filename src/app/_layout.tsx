@@ -1,4 +1,4 @@
-import "@/global.css";
+import "../../global.css";
 
 import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
@@ -13,14 +13,39 @@ export {
   ErrorBoundary,
 } from "expo-router";
 
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+} from "@expo-google-fonts/inter";
+import { Rye_400Regular, useFonts } from "@expo-google-fonts/rye";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import migrations from "@/db/migrations/migrations";
 
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
   const { theme } = useUniwind();
   const { success, error } = useMigrations(db, migrations);
+
+  const [fontsLoaded, fontError] = useFonts({
+    Rye_400Regular,
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
 
   if (error) {
     return (
@@ -29,7 +54,7 @@ export default function RootLayout() {
       </View>
     );
   }
-  if (!success) {
+  if (!success || (!fontsLoaded && !fontError)) {
     return null;
   }
 

@@ -5,7 +5,7 @@ export default function AnalyticsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background">
       <ScrollView className="flex-1 px-4 pt-6">
-        <Text className="text-foreground text-2xl font-bold mb-6">
+        <Text className="text-foreground text-2xl font-serif mb-6">
           Analytics
         </Text>
 
@@ -33,7 +33,7 @@ export default function AnalyticsScreen() {
           </View>
         </View>
 
-        <Text className="text-foreground text-lg font-semibold mb-4">
+        <Text className="text-foreground text-lg font-serif mb-4">
           Top Categories
         </Text>
         <View className="gap-4 pb-8">

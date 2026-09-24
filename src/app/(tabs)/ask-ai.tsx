@@ -13,7 +13,7 @@ export default function AskAIScreen() {
       <View className="flex-1 px-4 pt-6 pb-4">
         <View className="flex-row items-center gap-2 mb-6">
           <SparklesIcon size={24} className="text-primary" />
-          <Text className="text-foreground text-2xl font-bold">Ask AI</Text>
+          <Text className="text-foreground text-2xl font-serif">Ask AI</Text>
         </View>
 
         <ScrollView

@@ -57,10 +57,10 @@ export default function DashboardScreen() {
       <ScrollView className="flex-1 px-4 pt-6">
         {/* Header / Balance */}
         <View className="mb-8 items-center">
-          <Text className="text-muted-foreground text-sm font-medium mb-1">
+          <Text className="text-muted-foreground text-sm font-medium mb-1 font-sans">
             Total Balance
           </Text>
-          <Text className="text-foreground text-4xl font-bold tracking-tight">
+          <Text className="text-foreground text-4xl font-serif tracking-tight">
             KES 124,500
           </Text>
 
@@ -77,8 +77,8 @@ export default function DashboardScreen() {
               </View>
             </View>
             <View className="flex-row items-center gap-2">
-              <View className="bg-rose-500/20 p-2 rounded-full">
-                <ArrowUpIcon size={16} color="#f43f5e" />
+              <View className="bg-muted p-2 rounded-full">
+                <ArrowUpIcon size={16} className="text-foreground" />
               </View>
               <View>
                 <Text className="text-muted-foreground text-xs">Expenses</Text>
@@ -112,7 +112,7 @@ export default function DashboardScreen() {
 
         {/* Transactions List */}
         <View className="mb-4 flex-row items-center justify-between">
-          <Text className="text-foreground text-lg font-semibold">
+          <Text className="text-foreground text-lg font-serif">
             Recent Transactions
           </Text>
           <Button variant="ghost" size="sm">
@@ -128,10 +128,10 @@ export default function DashboardScreen() {
             >
               <View className="flex-row items-center gap-3">
                 <View
-                  className={`w-10 h-10 rounded-full items-center justify-center ${tx.type === "EXPENSE" ? "bg-rose-500/10" : "bg-emerald-500/10"}`}
+                  className={`w-10 h-10 rounded-full items-center justify-center ${tx.type === "EXPENSE" ? "bg-muted" : "bg-emerald-500/10"}`}
                 >
                   {tx.type === "EXPENSE" ? (
-                    <ArrowUpIcon size={18} color="#f43f5e" />
+                    <ArrowUpIcon size={18} className="text-foreground" />
                   ) : (
                     <ArrowDownIcon size={18} color="#10b981" />
                   )}
