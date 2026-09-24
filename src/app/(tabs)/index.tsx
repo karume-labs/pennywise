@@ -5,7 +5,6 @@ import {
   RefreshCwIcon,
 } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -54,7 +53,7 @@ export default function DashboardScreen() {
   const _isDark = theme === "dark";
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <View className="flex-1 bg-background">
       <ScrollView className="flex-1 px-4 pt-6">
         {/* Header / Balance */}
         <View className="mb-8 items-center">
@@ -166,6 +165,6 @@ export default function DashboardScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

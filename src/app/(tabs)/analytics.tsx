@@ -1,10 +1,9 @@
 import { ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui/text";
 
 export default function AnalyticsScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <View className="flex-1 bg-background">
       <ScrollView className="flex-1 px-4 pt-6">
         {/* Placeholder for chart */}
         <View className="bg-card border border-border rounded-3xl p-6 h-64 items-center justify-center mb-6 shadow-sm">
@@ -82,6 +81,6 @@ export default function AnalyticsScreen() {
           ))}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

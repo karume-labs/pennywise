@@ -1,6 +1,5 @@
 import { BotIcon, SendIcon } from "lucide-react-native";
 import { ScrollView, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -10,7 +9,7 @@ export default function AskAIScreen() {
   const isDark = theme === "dark";
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <View className="flex-1 bg-background">
       <View className="flex-1 px-4 pt-6 pb-4">
         <ScrollView
           className="flex-1 mb-4"
@@ -57,6 +56,6 @@ export default function AskAIScreen() {
           </Button>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
