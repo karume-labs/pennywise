@@ -4,7 +4,8 @@ import {
   ArrowUpIcon,
   RefreshCwIcon,
 } from "lucide-react-native";
-import { SafeAreaView, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
