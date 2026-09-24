@@ -29,6 +29,7 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # typescript
@@ -39,3 +40,21 @@ yarn-error.*
 
 expo-env.d.ts
 # @end expo-cli
+
+TODO.md
+/android
+/ios
+uniwind-types.d.ts
+
+migrations/
+
+# Generated Native Binaries (50MB+ each, do not track to avoid repo bloat)
+/modules/torrent-daemon/android/libs/daemon.aar
+/modules/torrent-daemon/android/libs/daemon-sources.jar
+/modules/torrent-daemon/ios/Daemon.xcframework/
+
+# Native Module Build Artifacts
+/modules/*/android/build/
+/modules/*/android/.cxx/
+/modules/*/ios/build/
+.gradle/
