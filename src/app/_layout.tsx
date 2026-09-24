@@ -61,7 +61,9 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={NAV_THEME[theme ?? "light"]}>
       <StatusBar style={theme === "dark" ? "light" : "dark"} />
-      <Stack />
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
       <PortalHost />
     </ThemeProvider>
   );
