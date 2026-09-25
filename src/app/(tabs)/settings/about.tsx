@@ -1,6 +1,21 @@
-import { CodeIcon, HandCoinsIcon, ShieldCheckIcon } from "lucide-react-native";
-import { ScrollView, View } from "react-native";
+import {
+  BriefcaseIcon,
+  ChevronRightIcon,
+  CodeIcon,
+  GitBranchIcon,
+  GlobeIcon,
+  HandCoinsIcon,
+  MessageCircleIcon,
+  ShieldCheckIcon,
+} from "lucide-react-native";
+import { Linking, ScrollView, View } from "react-native";
+import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+
+const PORTFOLIO_URL = "https://karume.vercel.app";
+const GITHUB_URL = "https://github.com/Karume-lab";
+const LINKEDIN_URL = "https://linkedin.com/in/daniel-karume";
+const TWITTER_URL = "https://twitter.com/karume_lab";
 
 export default function AboutScreen() {
   return (
@@ -44,6 +59,67 @@ export default function AboutScreen() {
               </Text>
             </View>
           </View>
+        </View>
+
+        <Text className="text-muted-foreground font-semibold mb-2 ml-2 mt-8 w-full">
+          Developer
+        </Text>
+        <View className="bg-card rounded-2xl border border-border w-full overflow-hidden">
+          <Button
+            variant="ghost"
+            className="flex-row items-center justify-between p-4 h-auto border-b border-border/50 rounded-none"
+            onPress={() => Linking.openURL(PORTFOLIO_URL)}
+          >
+            <View className="flex-row items-center gap-3">
+              <View className="bg-primary/10 p-2 rounded-full">
+                <GlobeIcon size={20} className="text-primary" />
+              </View>
+              <Text className="text-foreground font-medium">Portfolio</Text>
+            </View>
+            <ChevronRightIcon size={20} className="text-muted-foreground" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="flex-row items-center justify-between p-4 h-auto border-b border-border/50 rounded-none"
+            onPress={() => Linking.openURL(GITHUB_URL)}
+          >
+            <View className="flex-row items-center gap-3">
+              <View className="bg-foreground/10 p-2 rounded-full">
+                <GitBranchIcon size={20} className="text-foreground" />
+              </View>
+              <Text className="text-foreground font-medium">GitHub</Text>
+            </View>
+            <ChevronRightIcon size={20} className="text-muted-foreground" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="flex-row items-center justify-between p-4 h-auto border-b border-border/50 rounded-none"
+            onPress={() => Linking.openURL(LINKEDIN_URL)}
+          >
+            <View className="flex-row items-center gap-3">
+              <View className="bg-blue-500/10 p-2 rounded-full">
+                <BriefcaseIcon size={20} color="#3b82f6" />
+              </View>
+              <Text className="text-foreground font-medium">LinkedIn</Text>
+            </View>
+            <ChevronRightIcon size={20} className="text-muted-foreground" />
+          </Button>
+
+          <Button
+            variant="ghost"
+            className="flex-row items-center justify-between p-4 h-auto rounded-none"
+            onPress={() => Linking.openURL(TWITTER_URL)}
+          >
+            <View className="flex-row items-center gap-3">
+              <View className="bg-sky-500/10 p-2 rounded-full">
+                <MessageCircleIcon size={20} color="#0ea5e9" />
+              </View>
+              <Text className="text-foreground font-medium">Twitter / X</Text>
+            </View>
+            <ChevronRightIcon size={20} className="text-muted-foreground" />
+          </Button>
         </View>
       </View>
     </ScrollView>
