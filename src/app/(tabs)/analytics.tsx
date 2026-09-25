@@ -1,6 +1,12 @@
 import { Dimensions, ScrollView, View } from "react-native";
-import { LineChart } from "react-native-gifted-charts";
 import { useUniwind } from "uniwind";
+import {
+  VictoryAxis,
+  VictoryChart,
+  VictoryLine,
+  VictoryTooltip,
+  VictoryVoronoiContainer,
+} from "victory-native";
 import { Text } from "@/components/ui/text";
 
 export default function AnalyticsScreen() {
@@ -10,21 +16,21 @@ export default function AnalyticsScreen() {
   const chartColor = "#6C391A"; // Primary (Umber Brown)
   const textColor = isDark ? "#E8DCC4" : "#3A3A3C"; // Rotting Cream or Storm Grey
   const gridColor = isDark ? "#3A3A3C" : "#d5c8b0"; // Muted border colors
-  const tooltipBg = isDark ? "#3A3A3C" : "#d5c8b0";
+  const tooltipBg = isDark ? "#3A3A3C" : "#E8DCC4";
   const tooltipText = isDark ? "#E8DCC4" : "#0D0D0D";
 
   // Mock data for the line chart (spending trends over 6 months)
   const trendData = [
-    { value: 16000, label: "Apr" },
-    { value: 14500, label: "May" },
-    { value: 18000, label: "Jun" },
-    { value: 24000, label: "Jul" },
-    { value: 21000, label: "Aug" },
-    { value: 19500, label: "Sep" },
+    { x: "Apr", y: 16000 },
+    { x: "May", y: 14500 },
+    { x: "Jun", y: 18000 },
+    { x: "Jul", y: 24000 },
+    { x: "Aug", y: 21000 },
+    { x: "Sep", y: 19500 },
   ];
 
   const screenWidth = Dimensions.get("window").width;
-  const chartWidth = screenWidth - 80; // Accounting for padding
+  const chartWidth = screenWidth - 32; // Container padding is px-4 (16 * 2)
 
   return (
     <View className="flex-1 bg-background">
@@ -33,79 +39,74 @@ export default function AnalyticsScreen() {
         contentContainerStyle={{ paddingBottom: 40 }}
       >
         {/* Interactive Chart */}
-        <View className="bg-card border border-border rounded-3xl p-6 items-center justify-center mb-8 shadow-sm">
-          <Text className="text-muted-foreground text-center mb-6 font-semibold uppercase tracking-widest text-xs">
+        <View className="bg-card border border-border rounded-3xl p-4 items-center justify-center mb-8 shadow-sm">
+          <Text className="text-muted-foreground text-center font-semibold uppercase tracking-widest text-xs mt-2">
             Spending Trends
           </Text>
-          <View className="w-full items-center pl-2">
-            <LineChart
-              data={trendData}
+          <View className="w-full items-center mt-[-10px]">
+            <VictoryChart
               width={chartWidth}
-              height={140}
-              thickness={3}
-              color={chartColor}
-              noOfSections={3}
-              yAxisTextStyle={{
-                color: textColor,
-                fontSize: 10,
-                fontFamily: "Inter_400Regular",
-              }}
-              xAxisLabelTextStyle={{
-                color: textColor,
-                fontSize: 10,
-                fontFamily: "Inter_400Regular",
-                marginTop: 4,
-              }}
-              yAxisColor="transparent"
-              xAxisColor={gridColor}
-              rulesColor={gridColor}
-              yAxisLabelPrefix="KES "
-              yAxisLabelWidth={65}
-              isAnimated
-              animationDuration={1200}
-              hideDataPoints
-              focusEnabled
-              showStripOnFocus
-              showTextOnFocus
-              pointerConfig={{
-                pointerStripHeight: 140,
-                pointerStripColor: chartColor,
-                pointerStripWidth: 2,
-                pointerColor: chartColor,
-                radius: 6,
-                pointerLabelWidth: 90,
-                pointerLabelHeight: 36,
-                activatePointersOnLongPress: false,
-                autoAdjustPointerLabelPosition: true,
-                pointerLabelComponent: (items: any) => {
-                  return (
-                    <View
-                      style={{
-                        height: 36,
-                        width: 90,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        backgroundColor: tooltipBg,
-                        borderRadius: 8,
-                        marginTop: -30,
-                        marginLeft: -45,
+              height={220}
+              padding={{ top: 30, bottom: 40, left: 60, right: 30 }}
+              containerComponent={
+                <VictoryVoronoiContainer
+                  labels={({ datum }) => `KES ${datum.y.toLocaleString()}`}
+                  labelComponent={
+                    <VictoryTooltip
+                      renderInPortal={false}
+                      flyoutStyle={{
+                        fill: tooltipBg,
+                        stroke: gridColor,
+                        strokeWidth: 1,
                       }}
-                    >
-                      <Text
-                        style={{
-                          color: tooltipText,
-                          fontSize: 11,
-                          fontWeight: "bold",
-                          fontFamily: "Inter_400Regular",
-                        }}
-                      >
-                        {items[0].value.toLocaleString()}
-                      </Text>
-                    </View>
-                  );
-                },
-              }}
-            />
+                      style={{
+                        fill: tooltipText,
+                        fontSize: 12,
+                        fontFamily: "Inter_400Regular",
+                      }}
+                      pointerLength={5}
+                    />
+                  }
+                />
+              }
+            >
+              <VictoryAxis
+                style={{
+                  axis: { stroke: gridColor },
+                  tickLabels: {
+                    fill: textColor,
+                    fontSize: 10,
+                    fontFamily: "Inter_400Regular",
+                    padding: 5,
+                  },
+                  grid: { stroke: "none" },
+                }}
+              />
+              <VictoryAxis
+                dependentAxis
+                tickFormat={(t) => `KES ${t / 1000}k`}
+                style={{
+                  axis: { stroke: "none" },
+                  tickLabels: {
+                    fill: textColor,
+                    fontSize: 10,
+                    fontFamily: "Inter_400Regular",
+                    padding: 5,
+                  },
+                  grid: { stroke: gridColor, strokeDasharray: "4, 4" },
+                }}
+              />
+              <VictoryLine
+                data={trendData}
+                style={{
+                  data: { stroke: chartColor, strokeWidth: 3 },
+                }}
+                animate={{
+                  duration: 1000,
+                  onLoad: { duration: 1000 },
+                }}
+              />
+            </VictoryChart>
           </View>
         </View>
 
