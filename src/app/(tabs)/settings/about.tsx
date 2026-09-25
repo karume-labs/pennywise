@@ -54,8 +54,8 @@ export default function AboutScreen() {
 
         <View className="w-full bg-card p-6 rounded-3xl border border-border gap-4">
           <View className="flex-row items-start gap-3">
-            <View className="bg-emerald-500/10 p-2 rounded-xl">
-              <ShieldCheckIcon size={20} color="#10b981" />
+            <View className="bg-primary/10 p-2 rounded-xl">
+              <ShieldCheckIcon size={20} className="text-primary" />
             </View>
             <View className="flex-1 pt-1">
               <Text className="text-foreground font-semibold mb-1">
@@ -72,7 +72,7 @@ export default function AboutScreen() {
 
           <View className="flex-row items-start gap-3">
             <View className="bg-primary/10 p-2 rounded-xl">
-              <CodeIcon size={20} color="#6C391A" />
+              <CodeIcon size={20} className="text-primary" />
             </View>
             <View className="flex-1 pt-1">
               <Text className="text-foreground font-semibold mb-1">
