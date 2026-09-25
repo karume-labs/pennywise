@@ -23,7 +23,6 @@ const ALL_TREND_DATA = [
 
 export default function AnalyticsScreen() {
   const { theme } = useUniwind();
-  const isDark = theme === "dark";
   const [trendData, setTrendData] = useState(ALL_TREND_DATA);
 
   useFocusEffect(
@@ -35,11 +34,11 @@ export default function AnalyticsScreen() {
     }, []),
   );
 
-  const chartColor = "#6C391A"; // Primary (Umber Brown)
-  const textColor = isDark ? "#E8DCC4" : "#3A3A3C"; // Rotting Cream or Storm Grey
-  const gridColor = isDark ? "#3A3A3C" : "#d5c8b0"; // Muted border colors
-  const tooltipBg = isDark ? "#3A3A3C" : "#E8DCC4";
-  const tooltipText = isDark ? "#E8DCC4" : "#0D0D0D";
+  const chartColor = "#B5652F"; // Primary (Umber Brown) - lightened for contrast
+  const textColor = "#A69C8D"; // Text Secondary (Warm Grey)
+  const gridColor = "#3A2E22"; // Border/divider (Muted Umber)
+  const tooltipBg = "#2A2724"; // Elevated surface (Storm Grey)
+  const tooltipText = "#EDE3CE"; // Text Primary (Rotting Cream)
 
   const screenWidth = Dimensions.get("window").width;
   const chartWidth = screenWidth - 32; // Container padding is px-4 (16 * 2)

@@ -21,9 +21,7 @@ const LINKEDIN_URL = "https://linkedin.com/in/daniel-karume";
 const TWITTER_URL = "https://twitter.com/karume_lab";
 
 export default function AboutScreen() {
-  const { theme } = useUniwind();
-  const isDark = theme === "dark";
-  const _foregroundColor = isDark ? "#E8DCC4" : "#3A3A3C";
+  const _foregroundColor = "#EDE3CE"; // Rotting Cream
   return (
     <ScrollView className="flex-1 bg-background">
       <View className="px-4 py-8 items-center">

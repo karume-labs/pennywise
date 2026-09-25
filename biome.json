@@ -37,7 +37,11 @@
   },
   "css": {
     "parser": {
-      "tailwindDirectives": true
+      "tailwindDirectives": true,
+      "cssModules": false
+    },
+    "linter": {
+      "enabled": false
     },
     "formatter": {
       "enabled": false

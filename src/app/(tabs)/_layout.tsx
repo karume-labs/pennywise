@@ -8,27 +8,24 @@ import {
 import { useUniwind } from "uniwind";
 
 export default function TabLayout() {
-  const { theme } = useUniwind();
-  const isDark = theme === "dark";
-
   return (
     <Tabs
       screenOptions={{
         headerShown: true,
         headerTitleStyle: { fontFamily: "Rye_400Regular", fontSize: 24 },
-        headerStyle: { backgroundColor: isDark ? "#0D0D0D" : "#E8DCC4" },
-        headerTintColor: isDark ? "#E8DCC4" : "#3A3A3C",
+        headerStyle: { backgroundColor: "#0D0D0D" },
+        headerTintColor: "#EDE3CE",
         headerShadowVisible: false,
         tabBarShowLabel: false,
         tabBarStyle: {
-          backgroundColor: isDark ? "#0D0D0D" : "#E8DCC4",
-          borderTopColor: isDark ? "#3A3A3C" : "#d5c8b0",
+          backgroundColor: "#0D0D0D",
+          borderTopColor: "#3A2E22",
           height: 65,
           paddingBottom: 12,
           paddingTop: 12,
         },
-        tabBarActiveTintColor: "#6C391A",
-        tabBarInactiveTintColor: "#888888",
+        tabBarActiveTintColor: "#B5652F",
+        tabBarInactiveTintColor: "#A69C8D",
       }}
     >
       <Tabs.Screen

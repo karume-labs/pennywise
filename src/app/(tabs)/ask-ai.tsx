@@ -5,9 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 
 export default function AskAIScreen() {
-  const { theme } = useUniwind();
-  const isDark = theme === "dark";
-
   return (
     <View className="flex-1 bg-background">
       <View className="flex-1 px-4 pt-6 pb-4">
@@ -49,7 +46,7 @@ export default function AskAIScreen() {
           <TextInput
             className="flex-1 px-4 h-10 text-foreground"
             placeholder="Ask anything about your finances..."
-            placeholderTextColor={isDark ? "#666" : "#999"}
+            placeholderTextColor="#A69C8D"
           />
           <Button size="icon" className="rounded-full h-10 w-10">
             <SendIcon size={18} className="text-primary-foreground" />

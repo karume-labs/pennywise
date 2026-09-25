@@ -52,7 +52,6 @@ const MOCK_TRANSACTIONS = [
 export default function DashboardScreen() {
   const { theme } = useUniwind();
   const { privacyModeEnabled } = useSettingsStore();
-  const _isDark = theme === "dark";
 
   return (
     <View className="flex-1 bg-background">
