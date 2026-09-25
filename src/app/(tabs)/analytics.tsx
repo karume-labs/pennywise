@@ -1,3 +1,5 @@
+import { useFocusEffect } from "expo-router";
+import { useCallback, useState } from "react";
 import { Dimensions, ScrollView, View } from "react-native";
 import { useUniwind } from "uniwind";
 import {
@@ -12,6 +14,13 @@ import { Text } from "@/components/ui/text";
 export default function AnalyticsScreen() {
   const { theme } = useUniwind();
   const isDark = theme === "dark";
+  const [chartKey, setChartKey] = useState(0);
+
+  useFocusEffect(
+    useCallback(() => {
+      setChartKey((k) => k + 1);
+    }, []),
+  );
 
   const chartColor = "#6C391A"; // Primary (Umber Brown)
   const textColor = isDark ? "#E8DCC4" : "#3A3A3C"; // Rotting Cream or Storm Grey
@@ -45,6 +54,7 @@ export default function AnalyticsScreen() {
           </Text>
           <View className="w-full items-center mt-[-10px]">
             <VictoryChart
+              key={chartKey}
               width={chartWidth}
               height={220}
               padding={{ top: 30, bottom: 40, left: 60, right: 30 }}
