@@ -170,8 +170,8 @@ export default function AboutScreen() {
             onPress={() => Linking.openURL(TWITTER_URL)}
           >
             <View className="flex-row items-center gap-3">
-              <View className="bg-sky-500/10 p-2 rounded-xl">
-                <TwitterIcon size={24} color="#0ea5e9" />
+              <View className="bg-foreground/10 p-2 rounded-xl">
+                <TwitterIcon size={24} color={_foregroundColor} />
               </View>
               <View>
                 <Text className="text-base font-semibold text-foreground">
