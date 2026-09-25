@@ -29,6 +29,12 @@
           "backgroundColor": "#ffffff"
         }
       ],
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow Pennywise to use Face ID to unlock your finances."
+        }
+      ],
       "expo-status-bar"
     ],
     "experiments": {

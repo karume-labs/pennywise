@@ -8,6 +8,7 @@ import { ScrollView, View } from "react-native";
 import { useUniwind } from "uniwind";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { useSettingsStore } from "@/store/settings";
 
 const MOCK_TRANSACTIONS = [
   {
@@ -50,6 +51,7 @@ const MOCK_TRANSACTIONS = [
 
 export default function DashboardScreen() {
   const { theme } = useUniwind();
+  const { privacyModeEnabled } = useSettingsStore();
   const _isDark = theme === "dark";
 
   return (
@@ -61,7 +63,7 @@ export default function DashboardScreen() {
             Total Balance
           </Text>
           <Text className="text-foreground text-4xl font-serif tracking-tight">
-            KES 124,500
+            {privacyModeEnabled ? "KES ****.**" : "KES 124,500"}
           </Text>
 
           <View className="flex-row items-center gap-6 mt-4">
@@ -72,7 +74,7 @@ export default function DashboardScreen() {
               <View>
                 <Text className="text-muted-foreground text-xs">Income</Text>
                 <Text className="text-foreground font-semibold">
-                  KES 45,000
+                  {privacyModeEnabled ? "****.**" : "KES 45,000"}
                 </Text>
               </View>
             </View>
@@ -83,7 +85,7 @@ export default function DashboardScreen() {
               <View>
                 <Text className="text-muted-foreground text-xs">Expenses</Text>
                 <Text className="text-foreground font-semibold">
-                  KES 18,250
+                  {privacyModeEnabled ? "****.**" : "KES 18,250"}
                 </Text>
               </View>
             </View>
@@ -159,7 +161,7 @@ export default function DashboardScreen() {
                 className={`font-semibold ${tx.type === "EXPENSE" ? "text-foreground" : "text-emerald-500"}`}
               >
                 {tx.type === "EXPENSE" ? "-" : "+"}KES{" "}
-                {tx.amount.toLocaleString()}
+                {privacyModeEnabled ? "****.**" : tx.amount.toLocaleString()}
               </Text>
             </View>
           ))}

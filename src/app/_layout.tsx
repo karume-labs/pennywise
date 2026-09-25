@@ -24,6 +24,7 @@ import { Rye_400Regular, useFonts } from "@expo-google-fonts/rye";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { AppLockGate } from "@/components/AppLockGate";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import migrations from "@/db/migrations/migrations";
@@ -63,10 +64,16 @@ export default function RootLayout() {
     <ThemeProvider value={NAV_THEME[theme ?? "light"]}>
       <StatusBar style={theme === "dark" ? "light" : "dark"} />
       <SafeAreaProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-        <PortalHost />
+        <AppLockGate>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="settings"
+              options={{ headerShown: false, presentation: "modal" }}
+            />
+          </Stack>
+          <PortalHost />
+        </AppLockGate>
       </SafeAreaProvider>
     </ThemeProvider>
   );
