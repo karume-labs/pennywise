@@ -1,11 +1,10 @@
-import { Link, Tabs } from "expo-router";
+import { Tabs } from "expo-router";
 import {
   BotIcon,
   HomeIcon,
   PieChartIcon,
   SettingsIcon,
 } from "lucide-react-native";
-import { Pressable } from "react-native";
 import { useUniwind } from "uniwind";
 
 export default function TabLayout() {
@@ -34,13 +33,6 @@ export default function TabLayout() {
         options={{
           title: "Dashboard",
           tabBarIcon: ({ color }) => <HomeIcon color={color} size={24} />,
-          headerRight: () => (
-            <Link href="/settings" asChild>
-              <Pressable className="mr-4">
-                <SettingsIcon size={24} className="text-foreground" />
-              </Pressable>
-            </Link>
-          ),
         }}
       />
       <Tabs.Screen
@@ -55,6 +47,14 @@ export default function TabLayout() {
         options={{
           title: "Penny",
           tabBarIcon: ({ color }) => <BotIcon color={color} size={24} />,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          headerShown: false,
+          tabBarIcon: ({ color }) => <SettingsIcon color={color} size={24} />,
         }}
       />
     </Tabs>
