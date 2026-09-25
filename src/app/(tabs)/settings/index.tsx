@@ -225,12 +225,9 @@ export default function SettingsScreen() {
           <Text className="text-muted-foreground text-base mb-8">
             {sheetContent?.message}
           </Text>
-          <View className="flex-row gap-3 justify-start">
+          <View className="flex-row gap-3 justify-end">
             {sheetContent?.type === "wipe" ? (
               <>
-                <Button className="bg-destructive px-6" onPress={executeWipe}>
-                  <Text className="text-foreground font-medium">Wipe Data</Text>
-                </Button>
                 <Button
                   variant="ghost"
                   className="px-6"
@@ -239,6 +236,9 @@ export default function SettingsScreen() {
                   <Text className="text-muted-foreground font-medium">
                     Cancel
                   </Text>
+                </Button>
+                <Button className="bg-destructive px-6" onPress={executeWipe}>
+                  <Text className="text-foreground font-medium">Wipe Data</Text>
                 </Button>
               </>
             ) : (
