@@ -1,4 +1,5 @@
 import { useFocusEffect } from "expo-router";
+import { Car, ShoppingCart, Tv, Zap } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { Dimensions, ScrollView, View } from "react-native";
 import { useUniwind } from "uniwind";
@@ -11,14 +12,26 @@ import {
 } from "victory-native";
 import { Text } from "@/components/ui/text";
 
+const ALL_TREND_DATA = [
+  { x: "Apr", y: 16000 },
+  { x: "May", y: 14500 },
+  { x: "Jun", y: 18000 },
+  { x: "Jul", y: 24000 },
+  { x: "Aug", y: 21000 },
+  { x: "Sep", y: 19500 },
+];
+
 export default function AnalyticsScreen() {
   const { theme } = useUniwind();
   const isDark = theme === "dark";
-  const [chartKey, setChartKey] = useState(0);
+  const [trendData, setTrendData] = useState(ALL_TREND_DATA);
 
   useFocusEffect(
     useCallback(() => {
-      setChartKey((k) => k + 1);
+      // Reset to empty then restore so VictoryLine animates the draw-in on every focus
+      setTrendData([]);
+      const id = setTimeout(() => setTrendData(ALL_TREND_DATA), 50);
+      return () => clearTimeout(id);
     }, []),
   );
 
@@ -27,16 +40,6 @@ export default function AnalyticsScreen() {
   const gridColor = isDark ? "#3A3A3C" : "#d5c8b0"; // Muted border colors
   const tooltipBg = isDark ? "#3A3A3C" : "#E8DCC4";
   const tooltipText = isDark ? "#E8DCC4" : "#0D0D0D";
-
-  // Mock data for the line chart (spending trends over 6 months)
-  const trendData = [
-    { x: "Apr", y: 16000 },
-    { x: "May", y: 14500 },
-    { x: "Jun", y: 18000 },
-    { x: "Jul", y: 24000 },
-    { x: "Aug", y: 21000 },
-    { x: "Sep", y: 19500 },
-  ];
 
   const screenWidth = Dimensions.get("window").width;
   const chartWidth = screenWidth - 32; // Container padding is px-4 (16 * 2)
@@ -54,7 +57,6 @@ export default function AnalyticsScreen() {
           </Text>
           <View className="w-full items-center mt-[-10px]">
             <VictoryChart
-              key={chartKey}
               width={chartWidth}
               height={220}
               padding={{ top: 30, bottom: 40, left: 60, right: 30 }}
@@ -112,64 +114,107 @@ export default function AnalyticsScreen() {
                   data: { stroke: chartColor, strokeWidth: 3 },
                 }}
                 animate={{
-                  duration: 1000,
-                  onLoad: { duration: 1000 },
+                  duration: 800,
+                  onLoad: { duration: 800 },
                 }}
               />
             </VictoryChart>
           </View>
         </View>
 
-        <Text className="text-foreground text-lg font-serif mb-4">
-          Top Categories
-        </Text>
-        <View className="gap-4 pb-8">
+        {/* Top Categories */}
+        <View className="flex-row items-baseline justify-between mb-4">
+          <Text className="text-foreground text-lg font-serif">
+            Top Categories
+          </Text>
+          <Text className="text-muted-foreground text-xs uppercase tracking-widest">
+            This Month
+          </Text>
+        </View>
+
+        <View className="bg-card border border-border rounded-3xl overflow-hidden mb-8">
           {[
             {
+              rank: 1,
               name: "Groceries",
+              sub: "Food & household",
               amount: 15400,
-              color: "bg-georgie",
-              width: "70%",
+              pct: 70,
+              icon: ShoppingCart,
             },
             {
+              rank: 2,
               name: "Transport",
+              sub: "Fuel & transit",
               amount: 8200,
-              color: "bg-sewer",
-              width: "40%",
+              pct: 40,
+              icon: Car,
             },
             {
+              rank: 3,
               name: "Utilities",
+              sub: "Power & water",
               amount: 4500,
-              color: "bg-deadlights",
-              width: "25%",
+              pct: 25,
+              icon: Zap,
             },
             {
+              rank: 4,
               name: "Entertainment",
+              sub: "Streaming & leisure",
               amount: 3000,
-              color: "bg-barrens",
-              width: "15%",
+              pct: 15,
+              icon: Tv,
             },
-          ].map((cat) => (
-            <View
-              key={cat.name}
-              className="bg-card p-4 rounded-2xl border border-border"
-            >
-              <View className="flex-row justify-between mb-2">
-                <Text className="text-foreground font-medium">{cat.name}</Text>
-                <Text className="text-foreground font-semibold">
-                  KES {cat.amount.toLocaleString()}
-                </Text>
+          ].map((cat, idx, arr) => {
+            const Icon = cat.icon;
+            const isLast = idx === arr.length - 1;
+            return (
+              <View key={cat.name}>
+                <View className="px-4 py-4 flex-row items-center gap-4">
+                  {/* Icon container */}
+                  <View className="w-11 h-11 rounded-xl bg-secondary items-center justify-center">
+                    <Icon size={20} color="#6C391A" strokeWidth={1.75} />
+                  </View>
+
+                  {/* Label + sub */}
+                  <View className="flex-1">
+                    <View className="flex-row items-center gap-2 mb-0.5">
+                      <Text className="text-foreground font-bold text-[15px]">
+                        {cat.name}
+                      </Text>
+                      <Text className="text-muted-foreground text-[10px] uppercase tracking-wider font-medium">
+                        #{cat.rank}
+                      </Text>
+                    </View>
+                    <Text className="text-muted-foreground text-xs mb-2">
+                      {cat.sub}
+                    </Text>
+                    {/* Progress track */}
+                    <View className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                      <View
+                        className="h-full bg-primary rounded-full"
+                        style={{ width: `${cat.pct}%` }}
+                      />
+                    </View>
+                  </View>
+
+                  {/* Amount */}
+                  <View className="items-end">
+                    <Text className="text-foreground font-bold text-[15px]">
+                      KES {cat.amount.toLocaleString()}
+                    </Text>
+                    <Text className="text-muted-foreground text-xs mt-0.5">
+                      {cat.pct}% of budget
+                    </Text>
+                  </View>
+                </View>
+
+                {/* Divider — skip on last item */}
+                {!isLast && <View className="h-px bg-border mx-4" />}
               </View>
-              <View className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-                <View
-                  className={`h-full ${cat.color}`}
-                  style={{
-                    width: cat.width as import("react-native").DimensionValue,
-                  }}
-                />
-              </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
       </ScrollView>
     </View>
