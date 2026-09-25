@@ -28,7 +28,22 @@ export default function AboutScreen() {
           Pennywise
         </Text>
         <Text className="text-muted-foreground text-center mb-8">
-          Version 1.0.0 • Developed by Karume Labs
+          Version 1.0.0
+        </Text>
+
+        <Text className="text-xs font-semibold text-muted-foreground mb-4 w-full uppercase tracking-wider ml-2">
+          About the App
+        </Text>
+        <View className="bg-card border border-border/50 rounded-2xl p-5 mb-6 w-full">
+          <Text className="text-sm text-muted-foreground leading-6">
+            Pennywise is a privacy-first AI financial assistant that analyzes
+            your SMS transaction messages entirely on-device, categorizing your
+            spending without your data ever leaving your phone.
+          </Text>
+        </View>
+
+        <Text className="text-xs font-semibold text-muted-foreground mb-4 w-full uppercase tracking-wider ml-2">
+          Legal & Privacy
         </Text>
 
         <View className="w-full bg-card p-6 rounded-3xl border border-border gap-4">
@@ -61,8 +76,19 @@ export default function AboutScreen() {
           </View>
         </View>
 
-        <Text className="text-muted-foreground font-semibold mb-2 ml-2 mt-8 w-full">
+        <Text className="text-xs font-semibold text-muted-foreground mb-4 mt-2 w-full uppercase tracking-wider ml-2">
           Developer
+        </Text>
+        <View className="bg-card border border-border/50 rounded-2xl p-5 mb-6 w-full">
+          <Text className="text-sm text-muted-foreground leading-6">
+            Powered by{" "}
+            <Text className="line-through">coffee and sleepless nights</Text>{" "}
+            <Text className="underline">karume-lab.</Text>
+          </Text>
+        </View>
+
+        <Text className="text-xs font-semibold text-muted-foreground mb-4 w-full uppercase tracking-wider ml-2">
+          Links
         </Text>
         <View className="bg-card rounded-2xl border border-border w-full overflow-hidden">
           <Button
@@ -71,10 +97,17 @@ export default function AboutScreen() {
             onPress={() => Linking.openURL(PORTFOLIO_URL)}
           >
             <View className="flex-row items-center gap-3">
-              <View className="bg-primary/10 p-2 rounded-full">
-                <GlobeIcon size={20} className="text-primary" />
+              <View className="bg-primary/10 p-2 rounded-xl">
+                <GlobeIcon size={24} className="text-primary" />
               </View>
-              <Text className="text-foreground font-medium">Portfolio</Text>
+              <View>
+                <Text className="text-base font-semibold text-foreground">
+                  Portfolio
+                </Text>
+                <Text className="text-xs text-muted-foreground">
+                  karume.vercel.app
+                </Text>
+              </View>
             </View>
             <ChevronRightIcon size={20} className="text-muted-foreground" />
           </Button>
@@ -85,10 +118,17 @@ export default function AboutScreen() {
             onPress={() => Linking.openURL(GITHUB_URL)}
           >
             <View className="flex-row items-center gap-3">
-              <View className="bg-foreground/10 p-2 rounded-full">
-                <GitBranchIcon size={20} className="text-foreground" />
+              <View className="bg-foreground/10 p-2 rounded-xl">
+                <GitBranchIcon size={24} className="text-foreground" />
               </View>
-              <Text className="text-foreground font-medium">GitHub</Text>
+              <View>
+                <Text className="text-base font-semibold text-foreground">
+                  GitHub
+                </Text>
+                <Text className="text-xs text-muted-foreground">
+                  @Karume-lab
+                </Text>
+              </View>
             </View>
             <ChevronRightIcon size={20} className="text-muted-foreground" />
           </Button>
@@ -99,10 +139,17 @@ export default function AboutScreen() {
             onPress={() => Linking.openURL(LINKEDIN_URL)}
           >
             <View className="flex-row items-center gap-3">
-              <View className="bg-blue-500/10 p-2 rounded-full">
-                <BriefcaseIcon size={20} color="#3b82f6" />
+              <View className="bg-blue-500/10 p-2 rounded-xl">
+                <BriefcaseIcon size={24} color="#3b82f6" />
               </View>
-              <Text className="text-foreground font-medium">LinkedIn</Text>
+              <View>
+                <Text className="text-base font-semibold text-foreground">
+                  LinkedIn
+                </Text>
+                <Text className="text-xs text-muted-foreground">
+                  Daniel Karume
+                </Text>
+              </View>
             </View>
             <ChevronRightIcon size={20} className="text-muted-foreground" />
           </Button>
@@ -113,10 +160,17 @@ export default function AboutScreen() {
             onPress={() => Linking.openURL(TWITTER_URL)}
           >
             <View className="flex-row items-center gap-3">
-              <View className="bg-sky-500/10 p-2 rounded-full">
-                <MessageCircleIcon size={20} color="#0ea5e9" />
+              <View className="bg-sky-500/10 p-2 rounded-xl">
+                <MessageCircleIcon size={24} color="#0ea5e9" />
               </View>
-              <Text className="text-foreground font-medium">Twitter / X</Text>
+              <View>
+                <Text className="text-base font-semibold text-foreground">
+                  Twitter / X
+                </Text>
+                <Text className="text-xs text-muted-foreground">
+                  @karume_lab
+                </Text>
+              </View>
             </View>
             <ChevronRightIcon size={20} className="text-muted-foreground" />
           </Button>
