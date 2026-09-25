@@ -1,10 +1,12 @@
 import "@/global.css";
 
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { PortalHost } from "@rn-primitives/portal";
 import { Stack } from "expo-router";
 import { ThemeProvider } from "expo-router/react-navigation";
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useUniwind } from "uniwind";
 import { NAV_THEME } from "@/lib/theme";
@@ -61,16 +63,20 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={NAV_THEME[theme ?? "light"]}>
-      <StatusBar style="light" />
-      <SafeAreaProvider>
-        <AppLockGate>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          </Stack>
-          <PortalHost />
-        </AppLockGate>
-      </SafeAreaProvider>
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider value={NAV_THEME[theme ?? "light"]}>
+        <StatusBar style="light" />
+        <SafeAreaProvider>
+          <BottomSheetModalProvider>
+            <AppLockGate>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              </Stack>
+              <PortalHost />
+            </AppLockGate>
+          </BottomSheetModalProvider>
+        </SafeAreaProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }

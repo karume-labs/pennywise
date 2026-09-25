@@ -32,6 +32,7 @@
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",
     "@expo-google-fonts/rye": "^0.4.1",
+    "@gorhom/bottom-sheet": "^5.2.14",
     "@rn-primitives/accordion": "^1.5.2",
     "@rn-primitives/alert-dialog": "^1.5.2",
     "@rn-primitives/aspect-ratio": "^1.5.2",
