@@ -5,7 +5,6 @@ import {
   RefreshCwIcon,
 } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
-import { useUniwind } from "uniwind";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { useSettingsStore } from "@/store/settings";
@@ -50,7 +49,6 @@ const MOCK_TRANSACTIONS = [
 ];
 
 export default function DashboardScreen() {
-  const { theme } = useUniwind();
   const { privacyModeEnabled } = useSettingsStore();
 
   return (

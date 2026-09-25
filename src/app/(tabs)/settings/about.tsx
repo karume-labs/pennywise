@@ -6,7 +6,6 @@ import {
   ShieldCheckIcon,
 } from "lucide-react-native";
 import { Linking, ScrollView, View } from "react-native";
-import { useUniwind } from "uniwind";
 import {
   GithubIcon,
   LinkedinIcon,

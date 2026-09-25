@@ -2,7 +2,6 @@ import { useFocusEffect } from "expo-router";
 import { Car, ShoppingCart, Tv, Zap } from "lucide-react-native";
 import { useCallback, useState } from "react";
 import { Dimensions, ScrollView, View } from "react-native";
-import { useUniwind } from "uniwind";
 import {
   VictoryAxis,
   VictoryChart,
@@ -22,7 +21,6 @@ const ALL_TREND_DATA = [
 ];
 
 export default function AnalyticsScreen() {
-  const { theme } = useUniwind();
   const [trendData, setTrendData] = useState(ALL_TREND_DATA);
 
   useFocusEffect(

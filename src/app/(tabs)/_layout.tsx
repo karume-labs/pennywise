@@ -5,7 +5,6 @@ import {
   PieChartIcon,
   SettingsIcon,
 } from "lucide-react-native";
-import { useUniwind } from "uniwind";
 
 export default function TabLayout() {
   return (

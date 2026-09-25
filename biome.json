@@ -24,6 +24,10 @@
     "enabled": true,
     "rules": {
       "preset": "recommended",
+      "correctness": {
+        "noUnusedImports": "error",
+        "noUnusedVariables": "error"
+      },
       "suspicious": {
         "noUnknownAtRules": "off"
       },

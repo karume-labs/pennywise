@@ -1,5 +1,4 @@
 import { Stack } from "expo-router";
-import { useUniwind } from "uniwind";
 
 export default function SettingsLayout() {
   return (
