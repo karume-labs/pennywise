@@ -23,6 +23,9 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: isDark ? "#0D0D0D" : "#E8DCC4",
           borderTopColor: isDark ? "#3A3A3C" : "#d5c8b0",
+          height: 65,
+          paddingBottom: 12,
+          paddingTop: 12,
         },
         tabBarActiveTintColor: "#6C391A",
         tabBarInactiveTintColor: "#888888",
@@ -32,21 +35,21 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Dashboard",
-          tabBarIcon: ({ color }) => <HomeIcon color={color} size={24} />,
+          tabBarIcon: ({ color }) => <HomeIcon color={color} size={28} />,
         }}
       />
       <Tabs.Screen
         name="analytics"
         options={{
           title: "Analytics",
-          tabBarIcon: ({ color }) => <PieChartIcon color={color} size={24} />,
+          tabBarIcon: ({ color }) => <PieChartIcon color={color} size={28} />,
         }}
       />
       <Tabs.Screen
         name="ask-ai"
         options={{
           title: "Penny",
-          tabBarIcon: ({ color }) => <BotIcon color={color} size={24} />,
+          tabBarIcon: ({ color }) => <BotIcon color={color} size={28} />,
         }}
       />
       <Tabs.Screen
@@ -54,7 +57,7 @@ export default function TabLayout() {
         options={{
           title: "Settings",
           headerShown: false,
-          tabBarIcon: ({ color }) => <SettingsIcon color={color} size={24} />,
+          tabBarIcon: ({ color }) => <SettingsIcon color={color} size={28} />,
         }}
       />
     </Tabs>
