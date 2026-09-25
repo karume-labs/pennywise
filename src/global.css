@@ -13,6 +13,12 @@
   --spacing-hairline: hairlineWidth();
   --font-sans: 'Inter_400Regular';
   --font-serif: 'Rye_400Regular';
+
+  /* Pennywise/IT Category Colors */
+  --color-georgie: #EAB308; /* Georgie's Raincoat (Yellow) */
+  --color-sewer: #164E63; /* Derry Sewers (Murky Teal) */
+  --color-barrens: #3F6212; /* The Barrens (Dark Olive) */
+  --color-deadlights: #9A3412; /* Deadlights (Rusty Orange) */
 }
 
 @layer theme {

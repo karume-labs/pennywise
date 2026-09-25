@@ -37,25 +37,25 @@ export default function AnalyticsScreen() {
             {
               name: "Groceries",
               amount: 15400,
-              color: "bg-emerald-500",
+              color: "bg-georgie",
               width: "70%",
             },
             {
               name: "Transport",
               amount: 8200,
-              color: "bg-blue-500",
+              color: "bg-sewer",
               width: "40%",
             },
             {
               name: "Utilities",
               amount: 4500,
-              color: "bg-amber-500",
+              color: "bg-deadlights",
               width: "25%",
             },
             {
               name: "Entertainment",
               amount: 3000,
-              color: "bg-purple-500",
+              color: "bg-barrens",
               width: "15%",
             },
           ].map((cat) => (
