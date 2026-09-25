@@ -1,23 +1,29 @@
 import {
-  BriefcaseIcon,
   ChevronRightIcon,
   CodeIcon,
-  GitBranchIcon,
   GlobeIcon,
   HandCoinsIcon,
-  MessageCircleIcon,
   ShieldCheckIcon,
 } from "lucide-react-native";
 import { Linking, ScrollView, View } from "react-native";
+import { useUniwind } from "uniwind";
+import {
+  GithubIcon,
+  LinkedinIcon,
+  TwitterIcon,
+} from "@/components/ui/brand-icons";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 
 const PORTFOLIO_URL = "https://karume.vercel.app";
-const GITHUB_URL = "https://github.com/Karume-lab";
+const GITHUB_URL = "https://github.com/karume-labs";
 const LINKEDIN_URL = "https://linkedin.com/in/daniel-karume";
 const TWITTER_URL = "https://twitter.com/karume_lab";
 
 export default function AboutScreen() {
+  const { theme } = useUniwind();
+  const isDark = theme === "dark";
+  const _foregroundColor = isDark ? "#E8DCC4" : "#3A3A3C";
   return (
     <ScrollView className="flex-1 bg-background">
       <View className="px-4 py-8 items-center">
@@ -48,8 +54,10 @@ export default function AboutScreen() {
 
         <View className="w-full bg-card p-6 rounded-3xl border border-border gap-4">
           <View className="flex-row items-start gap-3">
-            <ShieldCheckIcon size={24} className="text-emerald-500 mt-1" />
-            <View className="flex-1">
+            <View className="bg-emerald-500/10 p-2 rounded-xl">
+              <ShieldCheckIcon size={20} color="#10b981" />
+            </View>
+            <View className="flex-1 pt-1">
               <Text className="text-foreground font-semibold mb-1">
                 Privacy First
               </Text>
@@ -63,8 +71,10 @@ export default function AboutScreen() {
           <View className="h-[1px] bg-border/50" />
 
           <View className="flex-row items-start gap-3">
-            <CodeIcon size={24} className="text-primary mt-1" />
-            <View className="flex-1">
+            <View className="bg-primary/10 p-2 rounded-xl">
+              <CodeIcon size={20} color="#6C391A" />
+            </View>
+            <View className="flex-1 pt-1">
               <Text className="text-foreground font-semibold mb-1">
                 License & Terms
               </Text>
@@ -119,14 +129,14 @@ export default function AboutScreen() {
           >
             <View className="flex-row items-center gap-3">
               <View className="bg-foreground/10 p-2 rounded-xl">
-                <GitBranchIcon size={24} className="text-foreground" />
+                <GithubIcon size={24} color={_foregroundColor} />
               </View>
               <View>
                 <Text className="text-base font-semibold text-foreground">
                   GitHub
                 </Text>
                 <Text className="text-xs text-muted-foreground">
-                  @Karume-lab
+                  @karume-labs
                 </Text>
               </View>
             </View>
@@ -140,7 +150,7 @@ export default function AboutScreen() {
           >
             <View className="flex-row items-center gap-3">
               <View className="bg-blue-500/10 p-2 rounded-xl">
-                <BriefcaseIcon size={24} color="#3b82f6" />
+                <LinkedinIcon size={24} color="#3b82f6" />
               </View>
               <View>
                 <Text className="text-base font-semibold text-foreground">
@@ -161,7 +171,7 @@ export default function AboutScreen() {
           >
             <View className="flex-row items-center gap-3">
               <View className="bg-sky-500/10 p-2 rounded-xl">
-                <MessageCircleIcon size={24} color="#0ea5e9" />
+                <TwitterIcon size={24} color="#0ea5e9" />
               </View>
               <View>
                 <Text className="text-base font-semibold text-foreground">
