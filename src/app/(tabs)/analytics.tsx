@@ -1,7 +1,7 @@
-import { useFocusEffect } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import { Car, ShoppingCart, Tv, Zap } from "lucide-react-native";
 import { useCallback, useState } from "react";
-import { Dimensions, ScrollView, View } from "react-native";
+import { Dimensions, Pressable, ScrollView, View } from "react-native";
 import {
   VictoryAxis,
   VictoryChart,
@@ -10,6 +10,8 @@ import {
   VictoryVoronoiContainer,
 } from "victory-native";
 import { Text } from "@/components/ui/text";
+import { useFormatCurrency } from "@/hooks/useFormatCurrency";
+import { useSettingsStore } from "@/store/settings";
 
 const ALL_TREND_DATA = [
   { x: "Apr", y: 16000 },
@@ -22,6 +24,9 @@ const ALL_TREND_DATA = [
 
 export default function AnalyticsScreen() {
   const [trendData, setTrendData] = useState(ALL_TREND_DATA);
+  const formatCurrency = useFormatCurrency();
+  const { privacyModeEnabled } = useSettingsStore();
+  const router = useRouter();
 
   useFocusEffect(
     useCallback(() => {
@@ -59,7 +64,11 @@ export default function AnalyticsScreen() {
               padding={{ top: 30, bottom: 40, left: 60, right: 30 }}
               containerComponent={
                 <VictoryVoronoiContainer
-                  labels={({ datum }) => `KES ${datum.y.toLocaleString()}`}
+                  labels={({ datum }) =>
+                    privacyModeEnabled
+                      ? "***"
+                      : `KES ${datum.y.toLocaleString()}`
+                  }
                   labelComponent={
                     <VictoryTooltip
                       renderInPortal={false}
@@ -93,7 +102,9 @@ export default function AnalyticsScreen() {
               />
               <VictoryAxis
                 dependentAxis
-                tickFormat={(t) => `KES ${t / 1000}k`}
+                tickFormat={(t) =>
+                  privacyModeEnabled ? "***" : `KES ${t / 1000}k`
+                }
                 style={{
                   axis: { stroke: "none" },
                   tickLabels: {
@@ -168,7 +179,12 @@ export default function AnalyticsScreen() {
             const isLast = idx === arr.length - 1;
             return (
               <View key={cat.name}>
-                <View className="px-4 py-4 flex-row items-center gap-4">
+                <Pressable
+                  className="px-4 py-4 flex-row items-center gap-4 active:bg-muted/50"
+                  onPress={() =>
+                    router.push(`/category/${cat.name.toLowerCase()}`)
+                  }
+                >
                   {/* Icon container */}
                   <View className="w-11 h-11 rounded-xl bg-secondary items-center justify-center">
                     <Icon size={20} color="#6C391A" strokeWidth={1.75} />
@@ -199,13 +215,13 @@ export default function AnalyticsScreen() {
                   {/* Amount */}
                   <View className="items-end">
                     <Text className="text-foreground font-bold text-[15px]">
-                      KES {cat.amount.toLocaleString()}
+                      {formatCurrency(cat.amount)}
                     </Text>
                     <Text className="text-muted-foreground text-xs mt-0.5">
                       {cat.pct}% of budget
                     </Text>
                   </View>
-                </View>
+                </Pressable>
 
                 {/* Divider — skip on last item */}
                 {!isLast && <View className="h-px bg-border mx-4" />}

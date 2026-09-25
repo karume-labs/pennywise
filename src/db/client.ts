@@ -1,12 +1,9 @@
 import { drizzle } from "drizzle-orm/expo-sqlite";
 import { openDatabaseSync } from "expo-sqlite";
-import * as categoriesSchema from "../features/categories/schema";
-import * as transactionsSchema from "../features/transactions/schema";
+import * as schema from "./schema";
 
-export const expoDb = openDatabaseSync("pennywise.db", {
-  enableChangeListener: true,
-});
+// Open SQLite database (synchronous)
+export const sqlite = openDatabaseSync("pennywise.db");
 
-export const db = drizzle(expoDb, {
-  schema: { ...categoriesSchema, ...transactionsSchema },
-});
+// Pass it to drizzle
+export const db = drizzle(sqlite, { schema });
