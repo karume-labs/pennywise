@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 
-export default function PermissionsScreen() {
+const PermissionsScreen = () => {
   const router = useRouter();
 
   const handleGrant = () => {
@@ -59,4 +59,6 @@ export default function PermissionsScreen() {
       </View>
     </View>
   );
-}
+};
+
+export default PermissionsScreen;

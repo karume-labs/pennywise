@@ -4,7 +4,7 @@ import { AppState, type AppStateStatus } from "react-native";
 import SmsAndroid from "react-native-get-sms-android";
 import { db } from "@/db/client";
 import { transactions } from "@/db/schema";
-import { parseMpesaSms } from "@/services/parsers/mpesa";
+import { parseFinancialSms } from "@/features/transactions/services/parsers";
 
 export const useSyncEngine = () => {
   const [isSyncing, setIsSyncing] = useState(false);
@@ -37,7 +37,7 @@ export const useSyncEngine = () => {
           let newRecords = 0;
 
           for (const msg of messages) {
-            const parsed = parseMpesaSms(msg.body);
+            const parsed = parseFinancialSms(msg.body);
             if (parsed) {
               // Check if already exists (transactions.id is the M-PESA code)
               const existing = await db
@@ -70,9 +70,11 @@ export const useSyncEngine = () => {
 
           // Trigger background categorization for any uncategorized transactions
           if (newRecords > 0) {
-            import("@/services/LlmService").then(({ llmService }) => {
-              llmService.processPendingCategorizations();
-            });
+            import("@/features/transactions/services/llm-service").then(
+              ({ llmService }) => {
+                llmService.processPendingCategorizations();
+              },
+            );
           }
         },
       );

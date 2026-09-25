@@ -11,7 +11,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { Text } from "@/components/ui/text";
 
-export default function SyncScreen() {
+const SyncScreen = () => {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
   const spinValue = useSharedValue(0);
@@ -24,7 +24,7 @@ export default function SyncScreen() {
       false,
     );
 
-    // Mock progress simulation
+    // Simulate progress
     const interval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
@@ -80,4 +80,6 @@ export default function SyncScreen() {
       <Text className="text-primary font-mono text-xs mt-2">{progress}%</Text>
     </View>
   );
-}
+};
+
+export default SyncScreen;

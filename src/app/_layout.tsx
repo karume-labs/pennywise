@@ -33,7 +33,7 @@ import migrations from "@/db/migrations/migrations";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function RootLayout() {
+const RootLayout = () => {
   const { theme } = useUniwind();
   const { success, error } = useMigrations(db, migrations);
 
@@ -79,4 +79,6 @@ export default function RootLayout() {
       </ThemeProvider>
     </GestureHandlerRootView>
   );
-}
+};
+
+export default RootLayout;

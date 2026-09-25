@@ -6,7 +6,7 @@ import {
   SettingsIcon,
 } from "lucide-react-native";
 
-export default function TabLayout() {
+const TabLayout = () => {
   return (
     <Tabs
       screenOptions={{
@@ -58,4 +58,6 @@ export default function TabLayout() {
       />
     </Tabs>
   );
-}
+};
+
+export default TabLayout;

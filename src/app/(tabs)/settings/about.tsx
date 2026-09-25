@@ -19,7 +19,7 @@ const GITHUB_URL = "https://github.com/karume-labs";
 const LINKEDIN_URL = "https://linkedin.com/in/daniel-karume";
 const TWITTER_URL = "https://twitter.com/karume_lab";
 
-export default function AboutScreen() {
+const AboutScreen = () => {
   const _foregroundColor = "#EDE3CE"; // Rotting Cream
   return (
     <ScrollView className="flex-1 bg-background">
@@ -185,4 +185,6 @@ export default function AboutScreen() {
       </View>
     </ScrollView>
   );
-}
+};
+
+export default AboutScreen;

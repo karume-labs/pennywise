@@ -1,6 +1,6 @@
-import { useSettingsStore } from "@/store/settings";
+import { useSettingsStore } from "@/features/settings/store";
 
-export function useFormatCurrency() {
+export const useFormatCurrency = () => {
   const { privacyModeEnabled } = useSettingsStore();
 
   const formatCurrency = (
@@ -22,4 +22,4 @@ export function useFormatCurrency() {
   };
 
   return formatCurrency;
-}
+};

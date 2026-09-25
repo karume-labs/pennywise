@@ -1,0 +1,38 @@
+export const MOCK_TRANSACTIONS = [
+  {
+    id: "1",
+    merchant: "Naivas Supermarket",
+    amount: 4500,
+    type: "EXPENSE",
+    category: "Groceries",
+    date: "Today, 14:30",
+    aiConfidence: 0.9,
+  },
+  {
+    id: "2",
+    merchant: "John Doe",
+    amount: 15000,
+    type: "INCOME",
+    category: "Transfer",
+    date: "Yesterday",
+    aiConfidence: 0.95,
+  },
+  {
+    id: "3",
+    merchant: "Uber BV",
+    amount: 850,
+    type: "EXPENSE",
+    category: "Transport",
+    date: "21 Sep",
+    aiConfidence: 0.4,
+  },
+  {
+    id: "4",
+    merchant: "KPLC Tokens",
+    amount: 2000,
+    type: "EXPENSE",
+    category: "Utilities",
+    date: "20 Sep",
+    aiConfidence: 0.88,
+  },
+];

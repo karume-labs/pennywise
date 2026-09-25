@@ -22,10 +22,10 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import { categories } from "@/features/categories/schema";
+import { useSettingsStore } from "@/features/settings/store";
 import { transactions } from "@/features/transactions/schema";
-import { useSettingsStore } from "@/store/settings";
 
-export default function SettingsScreen() {
+const SettingsScreen = () => {
   const {
     appLockEnabled,
     setAppLockEnabled,
@@ -254,4 +254,6 @@ export default function SettingsScreen() {
       </BottomSheetModal>
     </>
   );
-}
+};
+
+export default SettingsScreen;

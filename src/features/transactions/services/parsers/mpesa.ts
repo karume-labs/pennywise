@@ -1,12 +1,4 @@
-export type ParsedTransaction = {
-  transactionCode: string;
-  amount: number;
-  merchantOrSender: string;
-  date: Date;
-  type: "INCOME" | "EXPENSE" | "TRANSFER";
-  transactionFee?: number;
-  accountBalance?: number;
-};
+import type { ParsedTransaction } from "./types";
 
 // Extracts numeric values from strings like "1,200.50"
 const parseAmount = (amountStr: string) =>

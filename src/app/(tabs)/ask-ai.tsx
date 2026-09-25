@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import { transactions } from "@/db/schema";
-import { llmService } from "@/services/LlmService";
+import { llmService } from "@/features/transactions/services/llm-service";
 
 const TypewriterText = ({
   text,
@@ -41,7 +41,7 @@ type Message = {
   isStreaming?: boolean;
 };
 
-export default function AskAIScreen() {
+const AskAIScreen = () => {
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -174,4 +174,6 @@ export default function AskAIScreen() {
       </View>
     </View>
   );
-}
+};
+
+export default AskAIScreen;

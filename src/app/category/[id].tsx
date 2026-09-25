@@ -7,7 +7,7 @@ import {
 } from "lucide-react-native";
 import { Pressable, ScrollView, View } from "react-native";
 import { Text } from "@/components/ui/text";
-import { useFormatCurrency } from "@/hooks/useFormatCurrency";
+import { useFormatCurrency } from "@/shared/hooks/use-format-currency";
 
 const MOCK_CATEGORY_TRANSACTIONS = [
   {
@@ -26,13 +26,10 @@ const MOCK_CATEGORY_TRANSACTIONS = [
   },
 ];
 
-export default function CategoryDetailScreen() {
-  // Currently unused since we're using mock data
-  // const { id } = useLocalSearchParams();
+const CategoryDetailScreen = () => {
   const router = useRouter();
   const formatCurrency = useFormatCurrency();
 
-  // Mock total
   const categoryTotal = 15400;
 
   return (
@@ -104,4 +101,6 @@ export default function CategoryDetailScreen() {
       </ScrollView>
     </View>
   );
-}
+};
+
+export default CategoryDetailScreen;

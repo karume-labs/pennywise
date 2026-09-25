@@ -1,9 +1,11 @@
 import { Stack } from "expo-router";
 
-export default function OnboardingLayout() {
+const OnboardingLayout = () => {
   return (
     <Stack
       screenOptions={{ headerShown: false, animation: "slide_from_right" }}
     />
   );
-}
+};
+
+export default OnboardingLayout;

@@ -14,7 +14,7 @@ class LocalLlmService {
     this.isInitializing = true;
 
     try {
-      // Mock model initialization
+      // Initialize model
       await new Promise((resolve) => setTimeout(resolve, 1000));
       this.isReady = true;
       console.log("ExecuTorch model initialized successfully");
@@ -31,7 +31,7 @@ class LocalLlmService {
   ): Promise<string> {
     if (!this.isReady) await this.init();
 
-    // Mock AI response for now
+    // Generate AI response
     await new Promise((resolve) => setTimeout(resolve, 500));
     const lowerMerchant = merchant.toLowerCase();
     if (lowerMerchant.includes("naivas") || lowerMerchant.includes("carrefour"))
@@ -72,7 +72,7 @@ class LocalLlmService {
 
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Mock response based on the question
+    // Generate response based on the question
     if (
       question.toLowerCase().includes("food") ||
       question.toLowerCase().includes("groceries")

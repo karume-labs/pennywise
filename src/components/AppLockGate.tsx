@@ -6,9 +6,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { useSettingsStore } from "@/store/settings";
+import { useSettingsStore } from "@/features/settings/store";
 
-export function AppLockGate({ children }: { children: React.ReactNode }) {
+export const AppLockGate = ({ children }: { children: React.ReactNode }) => {
   const { appLockEnabled, _hasHydrated } = useSettingsStore();
   const [isUnlocked, setIsUnlocked] = useState(false);
   const appState = useRef(AppState.currentState);
@@ -93,4 +93,4 @@ export function AppLockGate({ children }: { children: React.ReactNode }) {
   }
 
   return <>{children}</>;
-}
+};

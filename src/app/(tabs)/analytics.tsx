@@ -10,8 +10,8 @@ import {
   VictoryVoronoiContainer,
 } from "victory-native";
 import { Text } from "@/components/ui/text";
-import { useFormatCurrency } from "@/hooks/useFormatCurrency";
-import { useSettingsStore } from "@/store/settings";
+import { useSettingsStore } from "@/features/settings/store";
+import { useFormatCurrency } from "@/shared/hooks/use-format-currency";
 
 const ALL_TREND_DATA = [
   { x: "Apr", y: 16000 },
@@ -22,7 +22,7 @@ const ALL_TREND_DATA = [
   { x: "Sep", y: 19500 },
 ];
 
-export default function AnalyticsScreen() {
+const AnalyticsScreen = () => {
   const [trendData, setTrendData] = useState(ALL_TREND_DATA);
   const formatCurrency = useFormatCurrency();
   const { privacyModeEnabled } = useSettingsStore();
@@ -232,4 +232,6 @@ export default function AnalyticsScreen() {
       </ScrollView>
     </View>
   );
-}
+};
+
+export default AnalyticsScreen;
