@@ -146,8 +146,8 @@ export default function AboutScreen() {
             onPress={() => Linking.openURL(LINKEDIN_URL)}
           >
             <View className="flex-row items-center gap-3">
-              <View className="bg-blue-500/10 p-2 rounded-xl">
-                <LinkedinIcon size={24} color="#3b82f6" />
+              <View className="bg-primary/10 p-2 rounded-xl">
+                <LinkedinIcon size={24} color="#B5652F" />
               </View>
               <View>
                 <Text className="text-base font-semibold text-foreground">

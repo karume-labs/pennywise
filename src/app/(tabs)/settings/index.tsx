@@ -98,7 +98,7 @@ export default function SettingsScreen() {
             <Switch
               value={appLockEnabled}
               onValueChange={setAppLockEnabled}
-              trackColor={{ true: "#6C391A", false: "#3A3A3C" }}
+              trackColor={{ true: "#B5652F", false: "#3A2E22" }}
             />
           </View>
 
@@ -119,7 +119,7 @@ export default function SettingsScreen() {
             <Switch
               value={privacyModeEnabled}
               onValueChange={setPrivacyModeEnabled}
-              trackColor={{ true: "#6C391A", false: "#3A3A3C" }}
+              trackColor={{ true: "#B5652F", false: "#3A2E22" }}
             />
           </View>
         </View>
@@ -134,8 +134,8 @@ export default function SettingsScreen() {
             onPress={handleBackup}
           >
             <View className="flex-row items-center gap-3">
-              <View className="bg-blue-500/10 p-2 rounded-full">
-                <DatabaseIcon size={20} color="#3b82f6" />
+              <View className="bg-primary/10 p-2 rounded-full">
+                <DatabaseIcon size={20} className="text-primary" />
               </View>
               <Text className="text-foreground font-medium">
                 Backup Database
