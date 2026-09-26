@@ -1,14 +1,6 @@
 import { desc } from "drizzle-orm";
-import { SendIcon } from "lucide-react-native";
 import { useRef, useState } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  TextInput,
-  View,
-} from "react-native";
-import { Button } from "@/components/ui/button";
+import { KeyboardAvoidingView, Platform, ScrollView, View } from "react-native";
 import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/db/client";
 import { transactions } from "@/db/schema";
@@ -16,6 +8,7 @@ import {
   ChatBubble,
   type Message,
 } from "@/features/transactions/components/ChatBubble";
+import { ChatComposer } from "@/features/transactions/components/ChatComposer";
 import { llmService } from "@/features/transactions/services/llm-service";
 
 const AskPennyScreen = () => {
@@ -85,7 +78,10 @@ const AskPennyScreen = () => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      // Android reports adjustResize but never actually shrinks the window,
+      // so the composer would stay behind the IME. Subtract the keyboard
+      // height here instead; iOS pads the layout.
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
     >
       <View className="flex-1 bg-background">
@@ -122,25 +118,12 @@ const AskPennyScreen = () => {
             </View>
           </ScrollView>
 
-          <View className="flex-row items-center gap-2 bg-card border border-border p-2 rounded-full shadow-sm mt-auto">
-            <TextInput
-              value={input}
-              onChangeText={setInput}
-              className="flex-1 px-4 h-10 text-foreground"
-              placeholder="Ask anything about your finances..."
-              placeholderTextColor="#A69C8D"
-              editable={!isThinking}
-              onSubmitEditing={handleSend}
-            />
-            <Button
-              size="icon"
-              className="rounded-full h-10 w-10"
-              onPress={handleSend}
-              disabled={isThinking || !input.trim()}
-            >
-              <SendIcon size={18} className="text-primary-foreground" />
-            </Button>
-          </View>
+          <ChatComposer
+            input={input}
+            setInput={setInput}
+            isThinking={isThinking}
+            onSend={handleSend}
+          />
         </View>
       </View>
     </KeyboardAvoidingView>

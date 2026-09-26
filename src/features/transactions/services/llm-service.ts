@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import {
   createLLMChatSession,
+  download,
   type LLMChatSession,
   models,
 } from "react-native-executorch";
@@ -12,20 +13,23 @@ class LocalLlmService {
   private session: LLMChatSession | null = null;
   private isReady = false;
 
-  async init() {
+  async init(onProgress?: (p: number) => void) {
     if (this.isReady || this.isInitializing) return;
     this.isInitializing = true;
 
     try {
-      // Initialize model (Llama 3.2 1B SpinQuant for fastest on-device perf)
-      this.session = await createLLMChatSession(
-        models.llm.LLAMA3_2_1B.XNNPACK_SPINQUANT,
-        {
-          generationConfig: {
-            temperature: 0.1, // very low for predictable categorization
-          },
+      // Step 1: Download model files to local cache (skipped if already cached)
+      const modelConfig = models.llm.LLAMA3_2_1B.XNNPACK_SPINQUANT;
+      const localConfig = await download(modelConfig, {
+        onProgress,
+      });
+
+      // Step 2: Initialize with local paths
+      this.session = await createLLMChatSession(localConfig, {
+        generationConfig: {
+          temperature: 0.1,
         },
-      );
+      });
       this.isReady = true;
       console.log("ExecuTorch LLM model initialized successfully");
     } catch (error) {

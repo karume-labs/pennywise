@@ -63,7 +63,7 @@ export const AddTransactionModal = forwardRef<BottomSheetModal>((_, ref) => {
 
   return (
     <BottomSheetModal
-      keyboardBehavior="fillParent"
+      keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
       // The sheet's own pan gesture otherwise wins over the nested option
       // lists (CategoryPicker) and drags the sheet instead of scrolling them.

@@ -45,7 +45,7 @@ export const AddSubscriptionModal = forwardRef<BottomSheetModal>((_, ref) => {
 
   return (
     <BottomSheetModal
-      keyboardBehavior="fillParent"
+      keyboardBehavior="interactive"
       keyboardBlurBehavior="restore"
       // The sheet's own pan gesture otherwise wins over the nested frequency
       // list and drags the sheet instead of scrolling it.
