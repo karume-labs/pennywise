@@ -1,12 +1,18 @@
 import type { ParsedTransaction } from "./types";
 
 /**
- * Parses Equity Bank SMS notifications.
+ * Parses bank transaction alert SMS. Keys on the template that Kenyan banks
+ * share rather than on any single bank: a masked account followed by
+ * "has been debited/credited" and an "Avail Bal:" summary.
  * Examples:
  * - "Dear Customer, KES 1,500.00 has been debited from your A/C ...012 on 26/09/2026 at 08:00 via POS at NAIVAS. Avail Bal: KES 10,000.00."
  * - "Dear Customer, KES 5,000.00 has been credited to your A/C ...012 on 25/09/2026 at 14:00 by JOHN DOE. Avail Bal: KES 15,000.00."
+ *
+ * Known gap: the date in the message ("on 26/09/2026 at 08:00") is discarded
+ * by the `.*` runs, so `date` is the sync time rather than the transaction
+ * time. See the note in the parser tests.
  */
-export const parseEquitySms = (body: string): ParsedTransaction | null => {
+export const parseBankAlertSms = (body: string): ParsedTransaction | null => {
   if (!body.includes("Dear Customer") || !body.includes("A/C")) return null;
 
   const debitMatch = body.match(
@@ -15,7 +21,7 @@ export const parseEquitySms = (body: string): ParsedTransaction | null => {
 
   if (debitMatch) {
     return {
-      transactionCode: `EQ_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      transactionCode: `BANK_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
       amount: parseFloat(debitMatch[1].replace(/,/g, "")),
       type: "EXPENSE",
       merchantOrSender: debitMatch[2].trim(),
@@ -31,7 +37,7 @@ export const parseEquitySms = (body: string): ParsedTransaction | null => {
 
   if (creditMatch) {
     return {
-      transactionCode: `EQ_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+      transactionCode: `BANK_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
       amount: parseFloat(creditMatch[1].replace(/,/g, "")),
       type: "INCOME",
       merchantOrSender: creditMatch[2].trim(),

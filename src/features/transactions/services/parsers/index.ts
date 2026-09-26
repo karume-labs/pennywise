@@ -1,20 +1,24 @@
-import { parseEquitySms } from "./equity";
+import { parseBankAlertSms } from "./bank-alert";
 import { parseGenericSms } from "./generic";
-import { parseMpesaSms } from "./mpesa";
+import { parseMobileMoneySms } from "./mobile-money";
 import type { ParsedTransaction } from "./types";
 
-// More parsers will be added here
+// Ordered by specificity: the mobile money and bank templates are precise, so
+// they must claim a message before the permissive generic fallback sees it.
+// Names describe the message shape, not the institution that sent it, so a new
+// provider or bank slots in without inventing a new category. Add the
+// institution's own template as a new entry ahead of the fallback.
 const parsers = [
   {
-    name: "MPESA",
-    parse: parseMpesaSms,
+    name: "MOBILE_MONEY",
+    parse: parseMobileMoneySms,
   },
   {
-    name: "EQUITY_BANK",
-    parse: parseEquitySms,
+    name: "BANK_ALERT",
+    parse: parseBankAlertSms,
   },
   {
-    name: "GENERIC_BANK",
+    name: "GENERIC",
     parse: parseGenericSms,
   },
 ];
