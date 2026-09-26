@@ -9,14 +9,14 @@ import { Pressable, Switch, View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 
-type Transaction = {
+export type Transaction = {
   id: string;
   merchant: string;
   amount: number;
   type: string;
   category: string;
   date: string;
-  aiConfidence: number;
+  aiConfidence: number | null;
 };
 
 type Props = {

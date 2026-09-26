@@ -19,10 +19,9 @@ export const useSyncEngine = () => {
       // For now, we will just sync the last 7 days if no timestamp is present
       const minDate = lastSyncDate ?? Date.now() - 7 * 24 * 60 * 60 * 1000;
 
-      // 2. Fetch SMS from MPESA
+      // 2. Fetch recent SMS messages
       const filter = {
         box: "inbox" as const,
-        address: "MPESA", // Filter by sender
         minDate,
       };
 
@@ -47,7 +46,6 @@ export const useSyncEngine = () => {
                 .limit(1);
 
               if (existing.length === 0) {
-                // Insert new transaction
                 await db.insert(transactions).values({
                   id: parsed.transactionCode,
                   merchantOrSender: parsed.merchantOrSender,

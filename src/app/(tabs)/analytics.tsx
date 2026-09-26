@@ -1,3 +1,4 @@
+import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { useFocusEffect, useRouter } from "expo-router";
 import { Car, ShoppingCart, Tv, Zap } from "lucide-react-native";
 import { useCallback, useState } from "react";
@@ -11,6 +12,7 @@ import {
 } from "victory-native";
 import { Text } from "@/components/ui/text";
 import { useSettingsStore } from "@/features/settings/store";
+import { thisMonthTransactionsQuery } from "@/features/transactions/queries";
 import { useFormatCurrency } from "@/shared/hooks/use-format-currency";
 
 const ALL_TREND_DATA = [
@@ -24,6 +26,7 @@ const ALL_TREND_DATA = [
 
 const AnalyticsScreen = () => {
   const [trendData, setTrendData] = useState(ALL_TREND_DATA);
+  const { data: thisMonthTxs } = useLiveQuery(thisMonthTransactionsQuery);
   const formatCurrency = useFormatCurrency();
   const { privacyModeEnabled } = useSettingsStore();
   const router = useRouter();
@@ -141,93 +144,105 @@ const AnalyticsScreen = () => {
         </View>
 
         <View className="bg-card border border-border rounded-3xl overflow-hidden mb-8">
-          {[
-            {
-              rank: 1,
-              name: "Groceries",
-              sub: "Food & household",
-              amount: 15400,
-              pct: 70,
-              icon: ShoppingCart,
-            },
-            {
-              rank: 2,
-              name: "Transport",
-              sub: "Fuel & transit",
-              amount: 8200,
-              pct: 40,
-              icon: Car,
-            },
-            {
-              rank: 3,
-              name: "Utilities",
-              sub: "Power & water",
-              amount: 4500,
-              pct: 25,
-              icon: Zap,
-            },
-            {
-              rank: 4,
-              name: "Entertainment",
-              sub: "Streaming & leisure",
-              amount: 3000,
-              pct: 15,
-              icon: Tv,
-            },
-          ].map((cat, idx, arr) => {
-            const Icon = cat.icon;
-            const isLast = idx === arr.length - 1;
-            return (
-              <View key={cat.name}>
-                <Pressable
-                  className="px-4 py-4 flex-row items-center gap-4 active:bg-muted/50"
-                  onPress={() =>
-                    router.push(`/category/${cat.name.toLowerCase()}`)
-                  }
-                >
-                  {/* Icon container */}
-                  <View className="w-11 h-11 rounded-xl bg-secondary items-center justify-center">
-                    <Icon size={20} color="#6C391A" strokeWidth={1.75} />
-                  </View>
+          {(() => {
+            if (!thisMonthTxs) return null;
 
-                  {/* Label + sub */}
-                  <View className="flex-1">
-                    <View className="flex-row items-center gap-2 mb-0.5">
+            const categoryMap = new Map<string, number>();
+            let totalSpend = 0;
+            thisMonthTxs.forEach((tx) => {
+              if (tx.type === "EXPENSE") {
+                const cat = tx.category || "Uncategorized";
+                categoryMap.set(cat, (categoryMap.get(cat) || 0) + tx.amount);
+                totalSpend += tx.amount;
+              }
+            });
+
+            const topCategories = Array.from(categoryMap.entries())
+              .map(([name, amount]) => ({
+                name,
+                amount,
+                pct:
+                  totalSpend > 0 ? Math.round((amount / totalSpend) * 100) : 0,
+              }))
+              .sort((a, b) => b.amount - a.amount)
+              .slice(0, 4)
+              .map((cat, idx) => {
+                let icon = ShoppingCart;
+                if (cat.name === "Transport") icon = Car;
+                if (cat.name === "Utilities") icon = Zap;
+                if (cat.name === "Entertainment") icon = Tv;
+
+                return {
+                  ...cat,
+                  rank: idx + 1,
+                  sub: "Category",
+                  icon,
+                };
+              });
+
+            if (topCategories.length === 0) {
+              return (
+                <View className="p-4 items-center">
+                  <Text className="text-muted-foreground">
+                    No expenses this month
+                  </Text>
+                </View>
+              );
+            }
+
+            return topCategories.map((cat, idx, arr) => {
+              const Icon = cat.icon;
+              const isLast = idx === arr.length - 1;
+              return (
+                <View key={cat.name}>
+                  <Pressable
+                    className="px-4 py-4 flex-row items-center gap-4 active:bg-muted/50"
+                    onPress={() => router.push(`/category/${cat.name}`)}
+                  >
+                    {/* Icon container */}
+                    <View className="w-11 h-11 rounded-xl bg-secondary items-center justify-center">
+                      <Icon size={20} color="#6C391A" strokeWidth={1.75} />
+                    </View>
+
+                    {/* Label + sub */}
+                    <View className="flex-1">
+                      <View className="flex-row items-center gap-2 mb-0.5">
+                        <Text className="text-foreground font-bold text-[15px]">
+                          {cat.name}
+                        </Text>
+                        <Text className="text-muted-foreground text-[10px] uppercase tracking-wider font-medium">
+                          #{cat.rank}
+                        </Text>
+                      </View>
+                      <Text className="text-muted-foreground text-xs mb-2">
+                        {cat.sub}
+                      </Text>
+                      {/* Progress track */}
+                      <View className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                        <View
+                          className="h-full bg-primary rounded-full"
+                          style={{ width: `${cat.pct}%` }}
+                        />
+                      </View>
+                    </View>
+
+                    {/* Amount */}
+                    <View className="items-end">
                       <Text className="text-foreground font-bold text-[15px]">
-                        {cat.name}
+                        {formatCurrency(cat.amount)}
                       </Text>
-                      <Text className="text-muted-foreground text-[10px] uppercase tracking-wider font-medium">
-                        #{cat.rank}
+                      <Text className="text-muted-foreground text-xs mt-0.5">
+                        {cat.pct}% of budget
                       </Text>
                     </View>
-                    <Text className="text-muted-foreground text-xs mb-2">
-                      {cat.sub}
-                    </Text>
-                    {/* Progress track */}
-                    <View className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                      <View
-                        className="h-full bg-primary rounded-full"
-                        style={{ width: `${cat.pct}%` }}
-                      />
-                    </View>
-                  </View>
+                  </Pressable>
 
-                  {/* Amount */}
-                  <View className="items-end">
-                    <Text className="text-foreground font-bold text-[15px]">
-                      {formatCurrency(cat.amount)}
-                    </Text>
-                    <Text className="text-muted-foreground text-xs mt-0.5">
-                      {cat.pct}% of budget
-                    </Text>
-                  </View>
-                </Pressable>
-
-                {/* Divider — skip on last item */}
-                {!isLast && <View className="h-px bg-border mx-4" />}
-              </View>
-            );
-          })}
+                  {/* Divider — skip on last item */}
+                  {!isLast && <View className="h-px bg-border mx-4" />}
+                </View>
+              );
+            });
+          })()}
         </View>
       </ScrollView>
     </View>

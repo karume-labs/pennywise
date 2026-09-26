@@ -1,4 +1,5 @@
-import { useRouter } from "expo-router";
+import { useLiveQuery } from "drizzle-orm/expo-sqlite";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   ArrowDownIcon,
   ArrowLeftIcon,
@@ -7,30 +8,22 @@ import {
 } from "lucide-react-native";
 import { Pressable, ScrollView, View } from "react-native";
 import { Text } from "@/components/ui/text";
+import { categoryTransactionsQuery } from "@/features/transactions/queries";
 import { useFormatCurrency } from "@/shared/hooks/use-format-currency";
-
-const MOCK_CATEGORY_TRANSACTIONS = [
-  {
-    id: "101",
-    merchant: "Naivas Supermarket",
-    amount: 4500,
-    type: "EXPENSE",
-    date: "Today, 14:30",
-  },
-  {
-    id: "102",
-    merchant: "Carrefour Mega",
-    amount: 10900,
-    type: "EXPENSE",
-    date: "18 Sep",
-  },
-];
 
 const CategoryDetailScreen = () => {
   const router = useRouter();
   const formatCurrency = useFormatCurrency();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { data: categoryTxs } = useLiveQuery(
+    categoryTransactionsQuery(id || ""),
+  );
 
-  const categoryTotal = 15400;
+  const categoryTotal =
+    categoryTxs?.reduce(
+      (acc, tx) => acc + (tx.type === "EXPENSE" ? tx.amount : 0),
+      0,
+    ) || 0;
 
   return (
     <View className="flex-1 bg-background">
@@ -41,7 +34,7 @@ const CategoryDetailScreen = () => {
         >
           <ArrowLeftIcon size={24} className="text-foreground" />
         </Pressable>
-        <Text className="text-foreground text-xl font-serif">Groceries</Text>
+        <Text className="text-foreground text-xl font-serif">{id}</Text>
       </View>
 
       <ScrollView className="flex-1 px-4 pt-6">
@@ -62,7 +55,7 @@ const CategoryDetailScreen = () => {
         </Text>
 
         <View className="gap-3 pb-12">
-          {MOCK_CATEGORY_TRANSACTIONS.map((tx) => (
+          {categoryTxs?.map((tx) => (
             <View
               key={tx.id}
               className="flex-row items-center justify-between bg-card p-4 rounded-2xl border border-border"
@@ -79,10 +72,10 @@ const CategoryDetailScreen = () => {
                 </View>
                 <View>
                   <Text className="text-foreground font-medium">
-                    {tx.merchant}
+                    {tx.merchantOrSender}
                   </Text>
                   <Text className="text-muted-foreground text-xs">
-                    {tx.date}
+                    {new Date(tx.date).toLocaleDateString()}
                   </Text>
                 </View>
               </View>
@@ -97,6 +90,13 @@ const CategoryDetailScreen = () => {
               </Text>
             </View>
           ))}
+          {categoryTxs?.length === 0 && (
+            <View className="p-4 items-center">
+              <Text className="text-muted-foreground">
+                No transactions for this category
+              </Text>
+            </View>
+          )}
         </View>
       </ScrollView>
     </View>

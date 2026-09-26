@@ -52,7 +52,7 @@ class LocalLlmService {
 
     for (const tx of pending) {
       const category = await this.categorizeTransaction(
-        tx.merchantOrSender,
+        tx.merchantOrSender ?? "",
         tx.rawSms ?? "",
       );
 

@@ -21,9 +21,9 @@ import { ScrollView, Switch, View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
+import { transactions } from "@/db/schema";
 import { categories } from "@/features/categories/schema";
 import { useSettingsStore } from "@/features/settings/store";
-import { transactions } from "@/features/transactions/schema";
 
 const SettingsScreen = () => {
   const {
