@@ -46,16 +46,23 @@ const AskPennyScreen = () => {
         .orderBy(desc(transactions.date))
         .limit(20);
 
-      // 2. Query Local LLM
-      const responseText = await llmService.askPenny(userMsg.content, recentTx);
-
+      const aiMsgId = (Date.now() + 1).toString();
       const aiMsg: Message = {
-        id: (Date.now() + 1).toString(),
+        id: aiMsgId,
         role: "assistant",
-        content: responseText,
-        isStreaming: true,
+        content: "",
+        isStreaming: false, // We stream natively via onToken now
       };
       setMessages((prev) => [...prev, aiMsg]);
+
+      // 2. Query Local LLM with onToken callback for real-time text updates
+      await llmService.askPenny(userMsg.content, recentTx, (token) => {
+        setMessages((prev) =>
+          prev.map((m) =>
+            m.id === aiMsgId ? { ...m, content: m.content + token } : m,
+          ),
+        );
+      });
     } catch (e) {
       console.error(e);
       const errorMsg: Message = {

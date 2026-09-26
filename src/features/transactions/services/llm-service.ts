@@ -1,12 +1,15 @@
 import { eq } from "drizzle-orm";
+import {
+  createLLMChatSession,
+  type LLMChatSession,
+  models,
+} from "react-native-executorch";
 import { db } from "@/db/client";
 import { transactions } from "@/db/schema";
 
-// Real integration would use createLlmChatSession or similar from 'react-native-executorch'
-// import { createLlmChatSession } from "react-native-executorch";
-
 class LocalLlmService {
   private isInitializing = false;
+  private session: LLMChatSession | null = null;
   private isReady = false;
 
   async init() {
@@ -14,10 +17,17 @@ class LocalLlmService {
     this.isInitializing = true;
 
     try {
-      // Initialize model
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Initialize model (Llama 3.2 1B SpinQuant for fastest on-device perf)
+      this.session = await createLLMChatSession(
+        models.llm.LLAMA3_2_1B.XNNPACK_SPINQUANT,
+        {
+          generationConfig: {
+            temperature: 0.1, // very low for predictable categorization
+          },
+        },
+      );
       this.isReady = true;
-      console.log("ExecuTorch model initialized successfully");
+      console.log("ExecuTorch LLM model initialized successfully");
     } catch (error) {
       console.error("Failed to initialize ExecuTorch model:", error);
     } finally {
@@ -31,16 +41,38 @@ class LocalLlmService {
   ): Promise<string> {
     if (!this.isReady) await this.init();
 
-    // Generate AI response
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const lowerMerchant = merchant.toLowerCase();
-    if (lowerMerchant.includes("naivas") || lowerMerchant.includes("carrefour"))
-      return "Groceries";
-    if (lowerMerchant.includes("kplc") || lowerMerchant.includes("water"))
-      return "Utilities";
-    if (lowerMerchant.includes("uber") || lowerMerchant.includes("bolt"))
-      return "Transport";
-    return "General";
+    if (!this.session) return "General";
+
+    const prompt = `Categorize the following transaction into exactly one of these categories: Groceries, Transport, Utilities, Dining, Shopping, Entertainment, Healthcare, General.
+Merchant: ${merchant}
+SMS context: ${_rawSms}
+Answer only with the category name.`;
+
+    try {
+      const response = await this.session.sendMessage(prompt);
+      const text = response.messages[response.messages.length - 1]
+        .content as string;
+      const lowerText = text.toLowerCase();
+
+      const categories = [
+        "groceries",
+        "transport",
+        "utilities",
+        "dining",
+        "shopping",
+        "entertainment",
+        "healthcare",
+      ];
+      for (const cat of categories) {
+        if (lowerText.includes(cat)) {
+          return cat.charAt(0).toUpperCase() + cat.slice(1);
+        }
+      }
+      return "General";
+    } catch (e) {
+      console.error("Categorization failed:", e);
+      return "General";
+    }
   }
 
   async processPendingCategorizations() {
@@ -67,24 +99,28 @@ class LocalLlmService {
   }
 
   // RAG / SQL-to-Text for Ask AI
-  async askPenny(question: string, contextRows: unknown[]): Promise<string> {
+  async askPenny(
+    question: string,
+    contextRows: unknown[],
+    onToken?: (token: string) => void,
+  ): Promise<string> {
     if (!this.isReady) await this.init();
+    if (!this.session) return "Sorry, my engine failed to start.";
 
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    // Provide context as a system prompt style message
+    const prompt = `You are Pennywise, an on-device AI financial assistant. Answer the user's question using the following recent transactions as context. Keep your answer brief and conversational.
+Context transactions: ${JSON.stringify(contextRows)}
+Question: ${question}`;
 
-    // Generate response based on the question
-    if (
-      question.toLowerCase().includes("food") ||
-      question.toLowerCase().includes("groceries")
-    ) {
-      return "Based on your recent transactions, you've spent KES 8,450 on food and groceries this week. This is 15% higher than last week's average.";
+    try {
+      const response = await this.session.sendMessage(prompt, onToken, {
+        temperature: 0.7,
+      });
+      return response.messages[response.messages.length - 1].content as string;
+    } catch (e) {
+      console.error("AskPenny failed:", e);
+      return "Oops, I encountered an error running the AI model locally.";
     }
-
-    if (question.toLowerCase().includes("total")) {
-      return `I can see ${contextRows.length} recent transactions in your history.`;
-    }
-
-    return "I've analyzed your local data. Everything seems to be well within your usual budget trends!";
   }
 }
 
