@@ -46,7 +46,10 @@ TODO.md
 /ios
 uniwind-types.d.ts
 
-migrations/
+# Legacy root-level migrations folder (Expo template default).
+# Must stay anchored: an unanchored "migrations/" also swallows the real,
+# required schema migrations in src/db/migrations/.
+/migrations/
 
 # Generated Native Binaries (50MB+ each, do not track to avoid repo bloat)
 /modules/torrent-daemon/android/libs/daemon.aar

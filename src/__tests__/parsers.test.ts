@@ -84,7 +84,10 @@ describe("Generic Fallback SMS Parser", () => {
       "Alert: USD 45.99 was debited from your card ending 1234 on 26/09. Ref: AMZN123. Bal: USD 1,200.50";
     const result = parseFinancialSms(sms);
     expect(result).not.toBeNull();
-    expect(result?.amount).toBe(45.99);
+    // `amount` is normalized to KES; the source figures are preserved alongside.
+    expect(result?.originalCurrency).toBe("USD");
+    expect(result?.originalAmount).toBe(45.99);
+    expect(result?.amount).toBeCloseTo(45.99 * 130.5, 5);
     expect(result?.type).toBe("EXPENSE");
     expect(result?.accountBalance).toBe(1200.5);
     expect(result?.source).toBe("GENERIC_BANK");
