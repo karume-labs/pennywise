@@ -1,18 +1,13 @@
 import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import { useLiveQuery } from "drizzle-orm/expo-sqlite";
-import {
-  AlertCircleIcon,
-  ArrowDownIcon,
-  ArrowUpIcon,
-  PlusIcon,
-  RefreshCwIcon,
-} from "lucide-react-native";
+import { PlusIcon } from "lucide-react-native";
 import { useCallback, useRef, useState } from "react";
 import { Pressable, ScrollView, View } from "react-native";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
 import type { transactions } from "@/db/schema";
 import { AddTransactionModal } from "@/features/transactions/components/AddTransactionModal";
+import { DashboardHeader } from "@/features/transactions/components/DashboardHeader";
+import { RecentTransactionsList } from "@/features/transactions/components/RecentTransactionsList";
+import { SyncStatusCard } from "@/features/transactions/components/SyncStatusCard";
 import {
   type Transaction,
   TransactionDetailModal,
@@ -77,140 +72,24 @@ const DashboardScreen = () => {
   return (
     <View className="flex-1 bg-background">
       <ScrollView className="flex-1 px-4 pt-6">
-        {/* Header / Balance */}
-        <View className="mb-8 items-center">
-          <Text className="text-muted-foreground text-sm font-medium mb-1 font-sans">
-            Total Balance
-          </Text>
-          <Text className="text-foreground text-4xl font-serif tracking-tight">
-            {formatCurrency(currentBalance)}
-          </Text>
+        <DashboardHeader
+          currentBalance={currentBalance}
+          totalIncome={totalIncome}
+          totalExpenses={totalExpenses}
+          formatCurrency={formatCurrency}
+        />
 
-          <View className="flex-row items-center gap-6 mt-4">
-            <View className="flex-row items-center gap-2">
-              <View className="bg-emerald-500/20 p-2 rounded-full">
-                <ArrowDownIcon size={16} color="#10b981" />
-              </View>
-              <View>
-                <Text className="text-muted-foreground text-xs">Income</Text>
-                <Text className="text-foreground font-semibold">
-                  {formatCurrency(totalIncome)}
-                </Text>
-              </View>
-            </View>
-            <View className="flex-row items-center gap-2">
-              <View className="bg-muted p-2 rounded-full">
-                <ArrowUpIcon size={16} className="text-foreground" />
-              </View>
-              <View>
-                <Text className="text-muted-foreground text-xs">Expenses</Text>
-                <Text className="text-foreground font-semibold">
-                  {formatCurrency(totalExpenses)}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </View>
+        <SyncStatusCard
+          isSyncing={isSyncing}
+          lastSyncDate={lastSyncDate}
+          performSync={performSync}
+        />
 
-        {/* Sync Status */}
-        <View className="flex-row items-center justify-between bg-secondary/50 p-4 rounded-2xl mb-6">
-          <View className="flex-row items-center gap-3">
-            <View className="bg-primary/10 p-2 rounded-full">
-              <RefreshCwIcon
-                size={18}
-                className={`text-primary ${isSyncing ? "animate-spin" : ""}`}
-              />
-            </View>
-            <View>
-              <Text className="text-foreground font-medium">
-                {isSyncing ? "Syncing SMS..." : "SMS Sync Active"}
-              </Text>
-              <Text className="text-muted-foreground text-xs">
-                {lastSyncDate
-                  ? `Last synced ${new Date(lastSyncDate).toLocaleTimeString()}`
-                  : "Ready"}
-              </Text>
-            </View>
-          </View>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="rounded-full"
-            onPress={performSync}
-            disabled={isSyncing}
-          >
-            <Text className="text-primary">
-              {isSyncing ? "Syncing..." : "Sync"}
-            </Text>
-          </Button>
-        </View>
-
-        {/* Transactions List */}
-        <View className="mb-4 flex-row items-center justify-between">
-          <Text className="text-foreground text-lg font-serif">
-            Recent Transactions
-          </Text>
-          <Button variant="ghost" size="sm">
-            <Text className="text-primary">See All</Text>
-          </Button>
-        </View>
-
-        <View className="gap-3 pb-8">
-          {recentTxs?.map((tx) => (
-            <Pressable
-              key={tx.id}
-              onPress={() => handleOpenTxModal(tx)}
-              className="flex-row items-center justify-between bg-card p-4 rounded-2xl border border-border active:bg-muted/50"
-            >
-              <View className="flex-row items-center gap-3">
-                <View
-                  className={`w-10 h-10 rounded-full items-center justify-center ${tx.type === "EXPENSE" ? "bg-muted" : "bg-emerald-500/10"}`}
-                >
-                  {tx.type === "EXPENSE" ? (
-                    <ArrowUpIcon size={18} className="text-foreground" />
-                  ) : (
-                    <ArrowDownIcon size={18} color="#10b981" />
-                  )}
-                </View>
-                <View>
-                  <View className="flex-row items-center gap-2">
-                    <Text className="text-foreground font-medium">
-                      {tx.merchantOrSender}
-                    </Text>
-                    {tx.aiConfidence !== null && tx.aiConfidence < 0.5 && (
-                      <View className="bg-amber-500/20 px-1.5 py-0.5 rounded flex-row items-center gap-1">
-                        <AlertCircleIcon size={10} color="#f59e0b" />
-                        <Text className="text-amber-500 text-[10px] font-bold">
-                          REVIEW
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                  <Text className="text-muted-foreground text-xs">
-                    {tx.category ?? "Uncategorized"} •{" "}
-                    {new Date(tx.date).toLocaleDateString()}
-                  </Text>
-                </View>
-              </View>
-              <Text
-                className={`font-semibold ${tx.type === "EXPENSE" ? "text-foreground" : "text-emerald-500"}`}
-              >
-                {formatCurrency(
-                  tx.type === "EXPENSE" ? -tx.amount : tx.amount,
-                  "KES",
-                  true,
-                )}
-              </Text>
-            </Pressable>
-          ))}
-          {recentTxs?.length === 0 && (
-            <View className="p-4 items-center">
-              <Text className="text-muted-foreground">
-                No recent transactions
-              </Text>
-            </View>
-          )}
-        </View>
+        <RecentTransactionsList
+          recentTxs={recentTxs}
+          formatCurrency={formatCurrency}
+          handleOpenTxModal={handleOpenTxModal}
+        />
       </ScrollView>
 
       {/* FAB */}

@@ -4,13 +4,14 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { eq } from "drizzle-orm";
-import { ArrowDownIcon } from "lucide-react-native";
 import { forwardRef, useEffect, useState } from "react";
-import { Pressable, ScrollView, Switch, View } from "react-native";
+import { Switch, View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import { customRules, transactions } from "@/db/schema";
+import { CategoryPicker } from "@/features/transactions/components/CategoryPicker";
+import { TransactionDetailHeader } from "@/features/transactions/components/TransactionDetailHeader";
 
 export type Transaction = {
   id: string;
@@ -94,84 +95,16 @@ export const TransactionDetailModal = forwardRef<BottomSheetModal, Props>(
         )}
       >
         <BottomSheetView className="p-6 pb-12 gap-6">
-          <View>
-            <Text className="text-muted-foreground text-xs uppercase tracking-wider font-semibold mb-1">
-              Merchant
-            </Text>
-            <Text className="font-rye text-foreground text-2xl">
-              {selectedTx?.merchant}
-            </Text>
-            <Text className="text-muted-foreground text-sm mt-1">
-              {selectedTx?.date}
-            </Text>
-          </View>
+          <TransactionDetailHeader selectedTx={selectedTx} />
 
-          <View className="bg-background rounded-xl border border-border p-4 gap-2">
-            <Text className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">
-              Raw SMS Data
-            </Text>
-            <Text className="text-foreground text-sm font-mono opacity-80 leading-5">
-              Paid KES {selectedTx?.amount.toLocaleString()} to{" "}
-              {selectedTx?.merchant} on {selectedTx?.date}. Transaction cost,
-              KES 15.00.
-            </Text>
-          </View>
-
-          <View className="gap-2">
-            <Text className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">
-              Assigned Category
-            </Text>
-            <Pressable
-              onPress={() => setIsEditingCategory(!isEditingCategory)}
-              className="bg-background border border-border rounded-xl px-4 py-3 flex-row items-center justify-between"
-            >
-              <View className="flex-row items-center gap-2">
-                <Text className="text-foreground font-medium">
-                  {selectedCategory}
-                </Text>
-                {selectedTx?.aiConfidence &&
-                  selectedTx.aiConfidence < 0.5 &&
-                  selectedCategory === selectedTx.category && (
-                    <View className="bg-amber-500/20 px-1.5 py-0.5 rounded">
-                      <Text className="text-amber-500 text-[10px] font-bold">
-                        LOW CONFIDENCE
-                      </Text>
-                    </View>
-                  )}
-              </View>
-              <ArrowDownIcon size={16} className="text-muted-foreground" />
-            </Pressable>
-
-            {isEditingCategory && (
-              <ScrollView
-                className="max-h-40 bg-card rounded-xl border border-border mt-1"
-                nestedScrollEnabled={true}
-              >
-                {categories.map((cat) => (
-                  <Pressable
-                    key={cat}
-                    onPress={() => {
-                      setSelectedCategory(cat);
-                      setIsEditingCategory(false);
-                    }}
-                    className={`px-4 py-3 border-b border-border/50 ${
-                      selectedCategory === cat ? "bg-primary/20" : ""
-                    }`}
-                  >
-                    <Text
-                      className={`${
-                        selectedCategory === cat
-                          ? "text-primary font-bold"
-                          : "text-foreground font-medium"
-                      }`}
-                    >
-                      {cat}
-                    </Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
-            )}
-          </View>
+          <CategoryPicker
+            selectedTx={selectedTx}
+            selectedCategory={selectedCategory}
+            isEditingCategory={isEditingCategory}
+            setIsEditingCategory={setIsEditingCategory}
+            setSelectedCategory={setSelectedCategory}
+            categories={categories}
+          />
 
           <View className="flex-row items-center justify-between bg-card rounded-xl p-4 border border-border mt-2">
             <View className="flex-1 pr-4">

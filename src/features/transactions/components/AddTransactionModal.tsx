@@ -3,13 +3,14 @@ import {
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { ArrowDownIcon } from "lucide-react-native";
 import { forwardRef, useState } from "react";
-import { Pressable, ScrollView, TextInput, View } from "react-native";
+import { TextInput, View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import { transactions } from "@/db/schema";
+import { CategoryPicker } from "@/features/transactions/components/CategoryPicker";
+import { TransactionTypeToggle } from "@/features/transactions/components/TransactionTypeToggle";
 
 export const AddTransactionModal = forwardRef<BottomSheetModal>((_, ref) => {
   const [amount, setAmount] = useState("");
@@ -74,36 +75,7 @@ export const AddTransactionModal = forwardRef<BottomSheetModal>((_, ref) => {
           Add Transaction
         </Text>
 
-        <View className="flex-row gap-4 mb-2">
-          <Pressable
-            onPress={() => setType("EXPENSE")}
-            className={`flex-1 py-2 items-center rounded-lg border ${type === "EXPENSE" ? "bg-muted border-muted" : "bg-transparent border-border"}`}
-          >
-            <Text
-              className={
-                type === "EXPENSE"
-                  ? "text-foreground font-semibold"
-                  : "text-muted-foreground"
-              }
-            >
-              Expense
-            </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setType("INCOME")}
-            className={`flex-1 py-2 items-center rounded-lg border ${type === "INCOME" ? "bg-emerald-500/20 border-emerald-500/50" : "bg-transparent border-border"}`}
-          >
-            <Text
-              className={
-                type === "INCOME"
-                  ? "text-emerald-500 font-semibold"
-                  : "text-muted-foreground"
-              }
-            >
-              Income
-            </Text>
-          </Pressable>
-        </View>
+        <TransactionTypeToggle type={type} setType={setType} />
 
         <View className="gap-2">
           <Text className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">
@@ -132,48 +104,14 @@ export const AddTransactionModal = forwardRef<BottomSheetModal>((_, ref) => {
           />
         </View>
 
-        <View className="gap-2">
-          <Text className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">
-            Category
-          </Text>
-          <Pressable
-            onPress={() => setIsEditingCategory(!isEditingCategory)}
-            className="bg-background border border-border rounded-xl px-4 py-3 flex-row items-center justify-between"
-          >
-            <Text className="text-foreground font-medium">{category}</Text>
-            <ArrowDownIcon size={16} className="text-muted-foreground" />
-          </Pressable>
-
-          {isEditingCategory && (
-            <ScrollView
-              className="max-h-40 bg-card rounded-xl border border-border mt-1"
-              nestedScrollEnabled={true}
-            >
-              {categories.map((cat) => (
-                <Pressable
-                  key={cat}
-                  onPress={() => {
-                    setCategory(cat);
-                    setIsEditingCategory(false);
-                  }}
-                  className={`px-4 py-3 border-b border-border/50 ${
-                    category === cat ? "bg-primary/20" : ""
-                  }`}
-                >
-                  <Text
-                    className={`${
-                      category === cat
-                        ? "text-primary font-bold"
-                        : "text-foreground font-medium"
-                    }`}
-                  >
-                    {cat}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          )}
-        </View>
+        <CategoryPicker
+          selectedTx={null}
+          selectedCategory={category}
+          isEditingCategory={isEditingCategory}
+          setIsEditingCategory={setIsEditingCategory}
+          setSelectedCategory={setCategory}
+          categories={categories}
+        />
 
         <Button className="bg-primary w-full mt-4" onPress={handleSave}>
           <Text className="text-primary-foreground font-medium">

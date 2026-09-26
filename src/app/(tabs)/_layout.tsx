@@ -42,7 +42,7 @@ const TabLayout = () => {
         }}
       />
       <Tabs.Screen
-        name="ask-ai"
+        name="ask-penny"
         options={{
           title: "Penny",
           tabBarIcon: ({ color }) => <BotIcon color={color} size={28} />,

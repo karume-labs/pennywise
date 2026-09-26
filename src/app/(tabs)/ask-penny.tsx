@@ -1,47 +1,18 @@
 import { desc } from "drizzle-orm";
 import { BotIcon, SendIcon } from "lucide-react-native";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { ScrollView, TextInput, View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import { transactions } from "@/db/schema";
+import {
+  ChatBubble,
+  type Message,
+} from "@/features/transactions/components/ChatBubble";
 import { llmService } from "@/features/transactions/services/llm-service";
 
-const TypewriterText = ({
-  text,
-  onComplete,
-}: {
-  text: string;
-  onComplete?: () => void;
-}) => {
-  const [displayedText, setDisplayedText] = useState("");
-
-  useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      setDisplayedText((prev) => prev + text.charAt(index));
-      index++;
-      if (index >= text.length) {
-        clearInterval(interval);
-        onComplete?.();
-      }
-    }, 20); // ms per character
-
-    return () => clearInterval(interval);
-  }, [text, onComplete]);
-
-  return <Text className="text-foreground leading-5">{displayedText}</Text>;
-};
-
-type Message = {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  isStreaming?: boolean;
-};
-
-const AskAIScreen = () => {
+const AskPennyScreen = () => {
   const [input, setInput] = useState("");
   const [isThinking, setIsThinking] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
@@ -111,33 +82,17 @@ const AskAIScreen = () => {
         >
           <View className="gap-4">
             {messages.map((msg) => (
-              <View
+              <ChatBubble
                 key={msg.id}
-                className={`${msg.role === "assistant" ? "bg-secondary rounded-tl-sm self-start" : "bg-primary rounded-tr-sm self-end"} p-4 rounded-2xl max-w-[85%]`}
-              >
-                {msg.role === "assistant" && msg.isStreaming ? (
-                  <TypewriterText
-                    text={msg.content}
-                    onComplete={() => {
-                      setMessages((prev) =>
-                        prev.map((m) =>
-                          m.id === msg.id ? { ...m, isStreaming: false } : m,
-                        ),
-                      );
-                    }}
-                  />
-                ) : (
-                  <Text
-                    className={
-                      msg.role === "assistant"
-                        ? "text-foreground leading-5"
-                        : "text-primary-foreground leading-5"
-                    }
-                  >
-                    {msg.content}
-                  </Text>
-                )}
-              </View>
+                msg={msg}
+                onAnimationComplete={(id) => {
+                  setMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === id ? { ...m, isStreaming: false } : m,
+                    ),
+                  );
+                }}
+              />
             ))}
 
             {isThinking && (
@@ -176,4 +131,4 @@ const AskAIScreen = () => {
   );
 };
 
-export default AskAIScreen;
+export default AskPennyScreen;
