@@ -6,6 +6,7 @@ import {
   VictoryTooltip,
   VictoryVoronoiContainer,
 } from "victory-native";
+import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
 
 type Props = {
@@ -27,7 +28,7 @@ export const SpendingTrendsChart = ({
   const chartWidth = screenWidth - 32; // Container padding is px-4 (16 * 2)
 
   return (
-    <View className="bg-card border border-border rounded-3xl p-4 items-center justify-center mb-8 shadow-sm">
+    <Card className="items-center justify-center mb-8">
       <Text className="text-muted-foreground text-center font-semibold uppercase tracking-widest text-xs mt-2">
         Spending Trends
       </Text>
@@ -100,6 +101,6 @@ export const SpendingTrendsChart = ({
           />
         </VictoryChart>
       </View>
-    </View>
+    </Card>
   );
 };

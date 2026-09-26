@@ -7,9 +7,26 @@ import {
   ShoppingCart,
 } from "lucide-react-native";
 import { Pressable, ScrollView, View } from "react-native";
+import { Card } from "@/components/ui/card";
+import { Skeleton, skeletonKeys } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { categoryTransactionsQuery } from "@/features/transactions/queries";
 import { useFormatCurrency } from "@/shared/hooks/use-format-currency";
+
+const SKELETON_ROW_COUNT = 4;
+
+const RowSkeleton = () => (
+  <Card className="flex-row items-center justify-between px-4">
+    <View className="flex-row items-center gap-3">
+      <Skeleton className="w-10 h-10 rounded-full" />
+      <View className="gap-2">
+        <Skeleton className="h-4 w-28 rounded" />
+        <Skeleton className="h-3 w-20 rounded" />
+      </View>
+    </View>
+    <Skeleton className="h-4 w-20 rounded" />
+  </Card>
+);
 
 const CategoryDetailScreen = () => {
   const router = useRouter();
@@ -18,6 +35,8 @@ const CategoryDetailScreen = () => {
   const { data: categoryTxs } = useLiveQuery(
     categoryTransactionsQuery(id || ""),
   );
+
+  const isLoading = categoryTxs === undefined;
 
   const categoryTotal =
     categoryTxs?.reduce(
@@ -45,9 +64,13 @@ const CategoryDetailScreen = () => {
           <Text className="text-muted-foreground uppercase tracking-widest text-xs font-semibold mb-2">
             Total Spent
           </Text>
-          <Text className="text-foreground text-4xl font-serif tracking-tight">
-            {formatCurrency(categoryTotal)}
-          </Text>
+          {isLoading ? (
+            <Skeleton className="h-11 w-40 rounded-lg" />
+          ) : (
+            <Text className="text-foreground text-4xl font-serif tracking-tight">
+              {formatCurrency(categoryTotal)}
+            </Text>
+          )}
         </View>
 
         <Text className="text-foreground text-lg font-serif mb-4">
@@ -55,10 +78,14 @@ const CategoryDetailScreen = () => {
         </Text>
 
         <View className="gap-3 pb-12">
+          {isLoading &&
+            skeletonKeys(SKELETON_ROW_COUNT).map((key) => (
+              <RowSkeleton key={key} />
+            ))}
           {categoryTxs?.map((tx) => (
-            <View
+            <Card
               key={tx.id}
-              className="flex-row items-center justify-between bg-card p-4 rounded-2xl border border-border"
+              className="flex-row items-center justify-between px-4"
             >
               <View className="flex-row items-center gap-3">
                 <View
@@ -88,9 +115,9 @@ const CategoryDetailScreen = () => {
                   true,
                 )}
               </Text>
-            </View>
+            </Card>
           ))}
-          {categoryTxs?.length === 0 && (
+          {!isLoading && categoryTxs?.length === 0 && (
             <View className="p-4 items-center">
               <Text className="text-muted-foreground">
                 No transactions for this category

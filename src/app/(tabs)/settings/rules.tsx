@@ -5,15 +5,21 @@ import { PlusIcon, SlidersIcon, TrashIcon } from "lucide-react-native";
 import { useRef } from "react";
 import { Pressable, ScrollView, View } from "react-native";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Skeleton, skeletonKeys } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import { customRules } from "@/db/schema";
 import { AddRuleModal } from "@/features/transactions/components/AddRuleModal";
 import { allRulesQuery } from "@/features/transactions/queries";
 
+const SKELETON_ROW_COUNT = 3;
+
 const RulesScreen = () => {
   const { data: rules } = useLiveQuery(allRulesQuery);
   const addRuleModalRef = useRef<BottomSheetModal>(null);
+
+  const isLoading = rules === undefined;
 
   const deleteRule = async (id: string) => {
     await db.delete(customRules).where(eq(customRules.id, id));
@@ -44,8 +50,24 @@ const RulesScreen = () => {
           </Button>
         </View>
 
-        <View className="bg-card rounded-2xl border border-border overflow-hidden">
-          {!rules || rules.length === 0 ? (
+        <Card className="overflow-hidden">
+          {isLoading ? (
+            skeletonKeys(SKELETON_ROW_COUNT).map((key) => (
+              <View
+                key={key}
+                className="flex-row items-center justify-between p-4 border-b border-border/50"
+              >
+                <View className="flex-1 gap-2">
+                  <Skeleton className="h-4 w-32 rounded" />
+                  <View className="flex-row items-center gap-2">
+                    <Skeleton className="h-3 w-20 rounded" />
+                    <Skeleton className="h-4 w-16 rounded-full" />
+                  </View>
+                </View>
+                <Skeleton className="h-5 w-5 rounded" />
+              </View>
+            ))
+          ) : rules === undefined || rules.length === 0 ? (
             <View className="p-6 items-center">
               <SlidersIcon
                 size={32}
@@ -88,7 +110,7 @@ const RulesScreen = () => {
               </View>
             ))
           )}
-        </View>
+        </Card>
       </ScrollView>
 
       <AddRuleModal ref={addRuleModalRef} />

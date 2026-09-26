@@ -5,8 +5,10 @@ import {
 } from "@gorhom/bottom-sheet";
 import { eq } from "drizzle-orm";
 import { forwardRef, useEffect, useState } from "react";
-import { Switch, View } from "react-native";
+import { View } from "react-native";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import { customRules, transactions } from "@/db/schema";
@@ -31,40 +33,44 @@ type Props = {
 
 export const TransactionDetailModal = forwardRef<BottomSheetModal, Props>(
   ({ selectedTx, createRule, setCreateRule }, ref) => {
-    const [isEditingCategory, setIsEditingCategory] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<string>("");
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
       if (selectedTx) {
         setSelectedCategory(selectedTx.category);
-        setIsEditingCategory(false);
       }
     }, [selectedTx]);
 
     const handleUpdate = async () => {
-      if (!selectedTx) return;
+      if (isSaving || !selectedTx) return;
+      setIsSaving(true);
 
-      // Update transaction category
-      await db
-        .update(transactions)
-        .set({
-          category: selectedCategory,
-          aiConfidence: 1.0, // Manual override sets high confidence
-        })
-        .where(eq(transactions.id, selectedTx.id));
+      try {
+        // Update transaction category
+        await db
+          .update(transactions)
+          .set({
+            category: selectedCategory,
+            aiConfidence: 1.0, // Manual override sets high confidence
+          })
+          .where(eq(transactions.id, selectedTx.id));
 
-      // Create rule if checked
-      if (createRule) {
-        // Insert or ignore / replace logic. For simple SQLite:
-        await db.insert(customRules).values({
-          id: `rule_${Date.now()}`,
-          merchantPattern: selectedTx.merchant.toLowerCase(),
-          assignedCategory: selectedCategory,
-        });
-      }
+        // Create rule if checked
+        if (createRule) {
+          // Insert or ignore / replace logic. For simple SQLite:
+          await db.insert(customRules).values({
+            id: `rule_${Date.now()}`,
+            merchantPattern: selectedTx.merchant.toLowerCase(),
+            assignedCategory: selectedCategory,
+          });
+        }
 
-      if (ref && typeof ref !== "function" && ref.current) {
-        ref.current.dismiss();
+        if (ref && typeof ref !== "function" && ref.current) {
+          ref.current.dismiss();
+        }
+      } finally {
+        setIsSaving(false);
       }
     };
 
@@ -81,8 +87,11 @@ export const TransactionDetailModal = forwardRef<BottomSheetModal, Props>(
 
     return (
       <BottomSheetModal
-        keyboardBehavior="extend"
+        keyboardBehavior="fillParent"
         keyboardBlurBehavior="restore"
+        // The sheet's own pan gesture otherwise wins over the nested option
+        // list (CategoryPicker) and drags the sheet instead of scrolling it.
+        enableContentPanningGesture={false}
         ref={ref}
         enableDynamicSizing={true}
         backgroundStyle={{ backgroundColor: "#2A2724" }}
@@ -102,13 +111,11 @@ export const TransactionDetailModal = forwardRef<BottomSheetModal, Props>(
           <CategoryPicker
             selectedTx={selectedTx}
             selectedCategory={selectedCategory}
-            isEditingCategory={isEditingCategory}
-            setIsEditingCategory={setIsEditingCategory}
             setSelectedCategory={setSelectedCategory}
             categories={categories}
           />
 
-          <View className="flex-row items-center justify-between bg-card rounded-xl p-4 border border-border mt-2">
+          <Card className="flex-row items-center justify-between px-4 mt-2">
             <View className="flex-1 pr-4">
               <Text className="text-foreground font-medium">
                 Create custom rule
@@ -118,16 +125,16 @@ export const TransactionDetailModal = forwardRef<BottomSheetModal, Props>(
                 {selectedTx?.category}
               </Text>
             </View>
-            <Switch
-              value={createRule}
-              onValueChange={setCreateRule}
-              trackColor={{ true: "#B5652F", false: "#3A2E22" }}
-            />
-          </View>
+            <Switch checked={createRule} onCheckedChange={setCreateRule} />
+          </Card>
 
-          <Button className="bg-primary w-full mt-2" onPress={handleUpdate}>
+          <Button
+            className="bg-primary w-full mt-2"
+            onPress={handleUpdate}
+            disabled={isSaving || !selectedTx}
+          >
             <Text className="text-primary-foreground font-medium">
-              Update Transaction
+              {isSaving ? "Updating..." : "Update Transaction"}
             </Text>
           </Button>
         </BottomSheetView>

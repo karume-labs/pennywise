@@ -5,8 +5,24 @@ import type React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AppState, View } from "react-native";
 import { Button } from "@/components/ui/button";
+import { Skeleton, skeletonKeys } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import { useSettingsStore } from "@/features/settings/store";
+
+const AppSkeleton = () => (
+  <View className="flex-1 bg-background px-4 pt-6">
+    <View className="mb-8 items-center">
+      <Skeleton className="h-4 w-24 rounded" />
+      <Skeleton className="h-11 w-48 rounded-lg mt-2" />
+    </View>
+    <Skeleton className="h-20 w-full rounded-2xl mb-6" />
+    <View className="gap-3">
+      {skeletonKeys(4).map((key) => (
+        <Skeleton key={key} className="h-[74px] w-full rounded-2xl" />
+      ))}
+    </View>
+  </View>
+);
 
 export const AppLockGate = ({ children }: { children: React.ReactNode }) => {
   const { appLockEnabled, _hasHydrated } = useSettingsStore();
@@ -75,7 +91,7 @@ export const AppLockGate = ({ children }: { children: React.ReactNode }) => {
     };
   }, [appLockEnabled, authenticate]);
 
-  if (!_hasHydrated) return null;
+  if (!_hasHydrated) return <AppSkeleton />;
 
   if (appLockEnabled && !isUnlocked) {
     return (

@@ -76,6 +76,7 @@ const DashboardScreen = () => {
           currentBalance={currentBalance}
           totalIncome={totalIncome}
           totalExpenses={totalExpenses}
+          isLoading={allTxs === undefined}
           formatCurrency={formatCurrency}
         />
 
@@ -87,6 +88,7 @@ const DashboardScreen = () => {
 
         <RecentTransactionsList
           recentTxs={recentTxs}
+          isLoading={recentTxs === undefined}
           formatCurrency={formatCurrency}
           handleOpenTxModal={handleOpenTxModal}
         />

@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { ShieldCheckIcon, WalletIcon } from "lucide-react-native";
 import { View } from "react-native";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
 
 const WelcomeScreen = () => {
@@ -20,7 +21,7 @@ const WelcomeScreen = () => {
           Your intelligent, automated expense tracker.
         </Text>
 
-        <View className="bg-card border border-border p-5 rounded-2xl gap-3 w-full">
+        <Card className="w-full">
           <View className="flex-row items-start gap-3">
             <ShieldCheckIcon size={24} className="text-emerald-500 mt-0.5" />
             <View className="flex-1">
@@ -33,7 +34,7 @@ const WelcomeScreen = () => {
               </Text>
             </View>
           </View>
-        </View>
+        </Card>
       </View>
 
       <Button

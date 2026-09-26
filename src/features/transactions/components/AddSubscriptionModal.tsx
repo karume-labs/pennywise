@@ -1,48 +1,55 @@
 import {
   BottomSheetBackdrop,
   BottomSheetModal,
+  BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { ArrowDownIcon } from "lucide-react-native";
 import { forwardRef, useState } from "react";
-import { Pressable, ScrollView, TextInput, View } from "react-native";
+import { View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import { subscriptions } from "@/db/schema";
+import { FrequencyPicker } from "@/features/transactions/components/FrequencyPicker";
 
 export const AddSubscriptionModal = forwardRef<BottomSheetModal>((_, ref) => {
   const [amount, setAmount] = useState("");
   const [merchant, setMerchant] = useState("");
   const [frequency, setFrequency] = useState("monthly");
-  const [isEditingFreq, setIsEditingFreq] = useState(false);
-
-  const frequencies = ["weekly", "monthly", "yearly"];
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
-    if (!amount || !merchant) return;
+    if (isSaving || !amount || !merchant) return;
+    setIsSaving(true);
 
-    await db.insert(subscriptions).values({
-      id: `sub_${Date.now()}`,
-      merchant: merchant,
-      amount: parseFloat(amount) || 0,
-      frequency: frequency,
-      status: "active",
-    });
+    try {
+      await db.insert(subscriptions).values({
+        id: `sub_${Date.now()}`,
+        merchant: merchant,
+        amount: parseFloat(amount) || 0,
+        frequency: frequency,
+        status: "active",
+      });
 
-    setAmount("");
-    setMerchant("");
-    setFrequency("monthly");
+      setAmount("");
+      setMerchant("");
+      setFrequency("monthly");
 
-    if (ref && typeof ref !== "function" && ref.current) {
-      ref.current.dismiss();
+      if (ref && typeof ref !== "function" && ref.current) {
+        ref.current.dismiss();
+      }
+    } finally {
+      setIsSaving(false);
     }
   };
 
   return (
     <BottomSheetModal
-      keyboardBehavior="extend"
+      keyboardBehavior="fillParent"
       keyboardBlurBehavior="restore"
+      // The sheet's own pan gesture otherwise wins over the nested frequency
+      // list and drags the sheet instead of scrolling it.
+      enableContentPanningGesture={false}
       ref={ref}
       enableDynamicSizing={true}
       backgroundStyle={{ backgroundColor: "#2A2724" }}
@@ -65,7 +72,7 @@ export const AddSubscriptionModal = forwardRef<BottomSheetModal>((_, ref) => {
           <Text className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">
             Merchant / Service
           </Text>
-          <TextInput
+          <BottomSheetTextInput
             placeholder="E.g., Netflix"
             placeholderTextColor="#A69C8D"
             value={merchant}
@@ -78,7 +85,7 @@ export const AddSubscriptionModal = forwardRef<BottomSheetModal>((_, ref) => {
           <Text className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">
             Amount
           </Text>
-          <TextInput
+          <BottomSheetTextInput
             placeholder="KES 0.00"
             placeholderTextColor="#A69C8D"
             keyboardType="decimal-pad"
@@ -88,54 +95,15 @@ export const AddSubscriptionModal = forwardRef<BottomSheetModal>((_, ref) => {
           />
         </View>
 
-        <View className="gap-2">
-          <Text className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">
-            Frequency
-          </Text>
-          <Pressable
-            onPress={() => setIsEditingFreq(!isEditingFreq)}
-            className="bg-background border border-border rounded-xl px-4 py-3 flex-row items-center justify-between"
-          >
-            <Text className="text-foreground font-medium capitalize">
-              {frequency}
-            </Text>
-            <ArrowDownIcon size={16} className="text-muted-foreground" />
-          </Pressable>
+        <FrequencyPicker frequency={frequency} setFrequency={setFrequency} />
 
-          {isEditingFreq && (
-            <ScrollView
-              className="max-h-40 bg-card rounded-xl border border-border mt-1"
-              nestedScrollEnabled={true}
-            >
-              {frequencies.map((freq) => (
-                <Pressable
-                  key={freq}
-                  onPress={() => {
-                    setFrequency(freq);
-                    setIsEditingFreq(false);
-                  }}
-                  className={`px-4 py-3 border-b border-border/50 ${
-                    frequency === freq ? "bg-primary/20" : ""
-                  }`}
-                >
-                  <Text
-                    className={`${
-                      frequency === freq
-                        ? "text-primary font-bold capitalize"
-                        : "text-foreground font-medium capitalize"
-                    }`}
-                  >
-                    {freq}
-                  </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          )}
-        </View>
-
-        <Button className="bg-primary w-full mt-4" onPress={handleSave}>
+        <Button
+          className="bg-primary w-full mt-4"
+          onPress={handleSave}
+          disabled={isSaving || !amount || !merchant}
+        >
           <Text className="text-primary-foreground font-medium">
-            Save Subscription
+            {isSaving ? "Saving..." : "Save Subscription"}
           </Text>
         </Button>
       </BottomSheetView>

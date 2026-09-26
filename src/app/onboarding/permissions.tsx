@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { MessageSquareIcon } from "lucide-react-native";
 import { View } from "react-native";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
 
 const PermissionsScreen = () => {
@@ -26,7 +27,7 @@ const PermissionsScreen = () => {
           transaction alerts from your bank or mobile money provider.
         </Text>
 
-        <View className="bg-card border border-border p-4 rounded-xl w-full">
+        <Card className="w-full">
           <Text className="text-foreground font-semibold mb-2">
             Why we need this:
           </Text>
@@ -35,7 +36,7 @@ const PermissionsScreen = () => {
             2. To extract amounts, dates, and merchants.{"\n"}
             3. All parsing is done locally on your phone.
           </Text>
-        </View>
+        </Card>
       </View>
 
       <View className="gap-3 w-full">

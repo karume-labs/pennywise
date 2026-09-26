@@ -12,6 +12,7 @@ import {
   TwitterIcon,
 } from "@/components/ui/brand-icons";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Text } from "@/components/ui/text";
 
 const PORTFOLIO_URL = "https://karume.vercel.app";
@@ -37,19 +38,19 @@ const AboutScreen = () => {
         <Text className="text-xs font-semibold text-muted-foreground mb-4 w-full uppercase tracking-wider ml-2">
           About the App
         </Text>
-        <View className="bg-card border border-border/50 rounded-2xl p-5 mb-6 w-full">
+        <Card className="mb-6 w-full">
           <Text className="text-sm text-muted-foreground leading-6">
             Pennywise is a privacy-first AI financial assistant that analyzes
             your SMS transaction messages entirely on-device, categorizing your
             spending without your data ever leaving your phone.
           </Text>
-        </View>
+        </Card>
 
         <Text className="text-xs font-semibold text-muted-foreground mb-4 w-full uppercase tracking-wider ml-2">
           Legal & Privacy
         </Text>
 
-        <View className="w-full bg-card p-6 rounded-3xl border border-border gap-4">
+        <Card className="w-full">
           <View className="flex-row items-start gap-3">
             <View className="bg-primary/10 p-2 rounded-xl">
               <ShieldCheckIcon size={20} className="text-primary" />
@@ -81,23 +82,23 @@ const AboutScreen = () => {
               </Text>
             </View>
           </View>
-        </View>
+        </Card>
 
         <Text className="text-xs font-semibold text-muted-foreground mb-4 mt-2 w-full uppercase tracking-wider ml-2">
           Developer
         </Text>
-        <View className="bg-card border border-border/50 rounded-2xl p-5 mb-6 w-full">
+        <Card className="mb-6 w-full">
           <Text className="text-sm text-muted-foreground leading-6">
             Powered by{" "}
             <Text className="line-through">coffee and sleepless nights</Text>{" "}
             <Text className="underline">karume-lab.</Text>
           </Text>
-        </View>
+        </Card>
 
         <Text className="text-xs font-semibold text-muted-foreground mb-4 w-full uppercase tracking-wider ml-2">
           Links
         </Text>
-        <View className="bg-card rounded-2xl border border-border w-full overflow-hidden">
+        <Card className="w-full overflow-hidden">
           <Button
             variant="ghost"
             className="flex-row items-center justify-between p-4 h-auto border-b border-border/50 rounded-none"
@@ -181,7 +182,7 @@ const AboutScreen = () => {
             </View>
             <ChevronRightIcon size={20} className="text-muted-foreground" />
           </Button>
-        </View>
+        </Card>
       </View>
     </ScrollView>
   );

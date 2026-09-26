@@ -50,18 +50,21 @@ const AnalyticsScreen = () => {
         <BudgetsList
           thisMonthTxs={thisMonthTxs}
           budgets={budgets}
+          isLoading={budgets === undefined}
           formatCurrency={formatCurrency}
           onAdd={() => addBudgetModalRef.current?.present()}
         />
 
         <SubscriptionsList
           subscriptions={subscriptions}
+          isLoading={subscriptions === undefined}
           formatCurrency={formatCurrency}
           onAdd={() => addSubscriptionModalRef.current?.present()}
         />
 
         <TopCategoriesList
           thisMonthTxs={thisMonthTxs}
+          isLoading={thisMonthTxs === undefined}
           formatCurrency={formatCurrency}
         />
       </ScrollView>

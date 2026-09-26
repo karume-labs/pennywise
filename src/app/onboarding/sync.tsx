@@ -1,29 +1,15 @@
 import { useRouter } from "expo-router";
-import { RefreshCwIcon } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
-import Animated, {
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withRepeat,
-  withTiming,
-} from "react-native-reanimated";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton, skeletonKeys } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 
 const SyncScreen = () => {
   const router = useRouter();
   const [progress, setProgress] = useState(0);
-  const spinValue = useSharedValue(0);
 
   useEffect(() => {
-    // Spin animation
-    spinValue.value = withRepeat(
-      withTiming(360, { duration: 2000, easing: Easing.linear }),
-      -1,
-      false,
-    );
-
     // Simulate progress
     const interval = setInterval(() => {
       setProgress((prev) => {
@@ -36,10 +22,7 @@ const SyncScreen = () => {
     }, 150);
 
     return () => clearInterval(interval);
-  }, [
-    // Spin animation
-    spinValue,
-  ]);
+  }, []);
 
   useEffect(() => {
     if (progress >= 100) {
@@ -50,20 +33,8 @@ const SyncScreen = () => {
     }
   }, [progress, router]);
 
-  const spinStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${spinValue.value}deg` }],
-    };
-  });
-
   return (
-    <View className="flex-1 bg-background pt-24 px-6 pb-12 items-center justify-center">
-      <Animated.View style={spinStyle} className="mb-8">
-        <View className="w-20 h-20 bg-primary/20 rounded-full items-center justify-center">
-          <RefreshCwIcon size={36} className="text-primary" />
-        </View>
-      </Animated.View>
-
+    <View className="flex-1 bg-background px-4 pt-24 pb-12">
       <Text className="text-foreground text-2xl font-serif text-center mb-2 tracking-tight">
         Syncing Messages...
       </Text>
@@ -71,13 +42,21 @@ const SyncScreen = () => {
         Reading local SMS inbox and extracting financial records.
       </Text>
 
-      <View className="w-full h-2 bg-secondary rounded-full overflow-hidden">
-        <View
-          className="h-full bg-primary rounded-full"
-          style={{ width: `${progress}%` }}
-        />
+      <View className="px-2">
+        <Progress value={progress} className="bg-secondary" />
+        <Text className="text-primary font-mono text-xs mt-2">{progress}%</Text>
+
+        <View className="mt-10 items-center">
+          <Skeleton className="h-4 w-24 rounded" />
+          <Skeleton className="h-11 w-48 rounded-lg mt-2" />
+        </View>
+        <Skeleton className="h-20 w-full rounded-2xl mt-8" />
+        <View className="gap-3 mt-6">
+          {skeletonKeys(3).map((key) => (
+            <Skeleton key={key} className="h-[74px] w-full rounded-2xl" />
+          ))}
+        </View>
       </View>
-      <Text className="text-primary font-mono text-xs mt-2">{progress}%</Text>
     </View>
   );
 };

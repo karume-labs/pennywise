@@ -1,8 +1,4 @@
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetView,
-} from "@gorhom/bottom-sheet";
+import type { BottomSheetModal } from "@gorhom/bottom-sheet";
 import * as FileSystem from "expo-file-system/legacy";
 import { type Href, useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
@@ -19,12 +15,18 @@ import {
   TrashIcon,
 } from "lucide-react-native";
 import { useRef, useState } from "react";
-import { ScrollView, Switch, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
 import { transactions } from "@/db/schema";
 import { categories } from "@/features/categories/schema";
+import {
+  SettingsSheet,
+  type SheetContent,
+} from "@/features/settings/components/SettingsSheet";
 import { useSettingsStore } from "@/features/settings/store";
 
 const SettingsScreen = () => {
@@ -37,11 +39,10 @@ const SettingsScreen = () => {
   const router = useRouter();
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const [sheetContent, setSheetContent] = useState<{
-    title: string;
-    message: string;
-    type: "wipe" | "alert";
-  } | null>(null);
+  const [pendingAction, setPendingAction] = useState<
+    "backup" | "export" | "wipe" | null
+  >(null);
+  const [sheetContent, setSheetContent] = useState<SheetContent | null>(null);
 
   const showAlert = (title: string, message: string) => {
     setSheetContent({ title, message, type: "alert" });
@@ -49,6 +50,8 @@ const SettingsScreen = () => {
   };
 
   const handleBackup = async () => {
+    if (pendingAction) return;
+    setPendingAction("backup");
     try {
       const dbPath = `${FileSystem.documentDirectory}SQLite/pennywise.db`;
       const fileInfo = await FileSystem.getInfoAsync(dbPath);
@@ -69,10 +72,14 @@ const SettingsScreen = () => {
     } catch (error) {
       console.error(error);
       showAlert("Error", "Failed to backup database");
+    } finally {
+      setPendingAction(null);
     }
   };
 
   const handleExportCSV = async () => {
+    if (pendingAction) return;
+    setPendingAction("export");
     try {
       const txs = await db.select().from(transactions);
       if (txs.length === 0) {
@@ -105,6 +112,8 @@ const SettingsScreen = () => {
     } catch (error) {
       console.error(error);
       showAlert("Error", "Failed to export CSV");
+    } finally {
+      setPendingAction(null);
     }
   };
 
@@ -119,6 +128,8 @@ const SettingsScreen = () => {
   };
 
   const executeWipe = async () => {
+    if (pendingAction) return;
+    setPendingAction("wipe");
     try {
       await db.delete(transactions);
       await db.delete(categories);
@@ -131,6 +142,8 @@ const SettingsScreen = () => {
       console.error(error);
       bottomSheetModalRef.current?.dismiss();
       setTimeout(() => showAlert("Error", "Failed to wipe data"), 500);
+    } finally {
+      setPendingAction(null);
     }
   };
 
@@ -141,7 +154,7 @@ const SettingsScreen = () => {
           <Text className="text-muted-foreground font-semibold mb-2 ml-2">
             Security & Privacy
           </Text>
-          <View className="bg-card rounded-2xl border border-border overflow-hidden mb-8">
+          <Card className="overflow-hidden mb-8">
             <View className="flex-row items-center justify-between p-4 border-b border-border/50">
               <View className="flex-row items-center gap-3">
                 <View className="bg-primary/10 p-2 rounded-full">
@@ -155,9 +168,8 @@ const SettingsScreen = () => {
                 </View>
               </View>
               <Switch
-                value={appLockEnabled}
-                onValueChange={setAppLockEnabled}
-                trackColor={{ true: "#B5652F", false: "#3A2E22" }}
+                checked={appLockEnabled}
+                onCheckedChange={setAppLockEnabled}
               />
             </View>
 
@@ -176,9 +188,8 @@ const SettingsScreen = () => {
                 </View>
               </View>
               <Switch
-                value={privacyModeEnabled}
-                onValueChange={setPrivacyModeEnabled}
-                trackColor={{ true: "#B5652F", false: "#3A2E22" }}
+                checked={privacyModeEnabled}
+                onCheckedChange={setPrivacyModeEnabled}
               />
             </View>
 
@@ -202,16 +213,17 @@ const SettingsScreen = () => {
               </View>
               <ChevronRightIcon size={20} className="text-muted-foreground" />
             </Button>
-          </View>
+          </Card>
 
           <Text className="text-muted-foreground font-semibold mb-2 ml-2">
             Data & Backup
           </Text>
-          <View className="bg-card rounded-2xl border border-border overflow-hidden mb-8">
+          <Card className="overflow-hidden mb-8">
             <Button
               variant="ghost"
               className="flex-row items-center justify-between p-4 h-auto border-b border-border/50 rounded-none"
               onPress={handleExportCSV}
+              disabled={pendingAction !== null}
             >
               <View className="flex-row items-center gap-3">
                 <View className="bg-primary/10 p-2 rounded-full">
@@ -226,6 +238,7 @@ const SettingsScreen = () => {
               variant="ghost"
               className="flex-row items-center justify-between p-4 h-auto border-b border-border/50 rounded-none"
               onPress={handleBackup}
+              disabled={pendingAction !== null}
             >
               <View className="flex-row items-center gap-3">
                 <View className="bg-primary/10 p-2 rounded-full">
@@ -242,6 +255,7 @@ const SettingsScreen = () => {
               variant="ghost"
               className="flex-row items-center justify-between p-4 h-auto rounded-none"
               onPress={handleWipeConfirm}
+              disabled={pendingAction !== null}
             >
               <View className="flex-row items-center gap-3">
                 <View className="bg-destructive/10 p-2 rounded-full">
@@ -253,12 +267,12 @@ const SettingsScreen = () => {
               </View>
               <TrashIcon size={20} className="text-destructive" />
             </Button>
-          </View>
+          </Card>
 
           <Text className="text-muted-foreground font-semibold mb-2 ml-2">
             About
           </Text>
-          <View className="bg-card rounded-2xl border border-border overflow-hidden mb-8">
+          <Card className="overflow-hidden mb-8">
             <Button
               variant="ghost"
               className="flex-row items-center justify-between p-4 h-auto rounded-none"
@@ -274,57 +288,15 @@ const SettingsScreen = () => {
               </View>
               <ChevronRightIcon size={20} className="text-muted-foreground" />
             </Button>
-          </View>
+          </Card>
         </View>
       </ScrollView>
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        enableDynamicSizing={true}
-        backgroundStyle={{ backgroundColor: "#2A2724" }}
-        handleIndicatorStyle={{ backgroundColor: "#3A2E22" }}
-        backdropComponent={(props) => (
-          <BottomSheetBackdrop
-            {...props}
-            opacity={0.5}
-            disappearsOnIndex={-1}
-            appearsOnIndex={0}
-          />
-        )}
-      >
-        <BottomSheetView className="p-6 pb-12">
-          <Text className="font-rye text-foreground text-2xl mb-3">
-            {sheetContent?.title}
-          </Text>
-          <Text className="text-muted-foreground text-base mb-8">
-            {sheetContent?.message}
-          </Text>
-          <View className="flex-row gap-3 justify-end">
-            {sheetContent?.type === "wipe" ? (
-              <>
-                <Button
-                  variant="ghost"
-                  className="px-6"
-                  onPress={() => bottomSheetModalRef.current?.dismiss()}
-                >
-                  <Text className="text-muted-foreground font-medium">
-                    Cancel
-                  </Text>
-                </Button>
-                <Button className="bg-destructive px-6" onPress={executeWipe}>
-                  <Text className="text-foreground font-medium">Wipe Data</Text>
-                </Button>
-              </>
-            ) : (
-              <Button
-                className="bg-primary px-8"
-                onPress={() => bottomSheetModalRef.current?.dismiss()}
-              >
-                <Text className="text-foreground font-medium">OK</Text>
-              </Button>
-            )}
-          </View>
-        </BottomSheetView>
-      </BottomSheetModal>
+      <SettingsSheet
+        sheetRef={bottomSheetModalRef}
+        content={sheetContent}
+        isWiping={pendingAction === "wipe"}
+        onConfirmWipe={executeWipe}
+      />
     </>
   );
 };

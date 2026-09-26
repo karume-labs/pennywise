@@ -1,11 +1,15 @@
 import { useRouter } from "expo-router";
 import { Car, ShoppingCart, Tv, Zap } from "lucide-react-native";
 import { Pressable, View } from "react-native";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { Text } from "@/components/ui/text";
 import type { transactions } from "@/db/schema";
+import { TopCategoriesListSkeleton } from "@/features/transactions/components/TopCategoriesListSkeleton";
 
 type Props = {
   thisMonthTxs: (typeof transactions.$inferSelect)[] | undefined;
+  isLoading: boolean;
   formatCurrency: (
     amount: number,
     currency?: string,
@@ -13,9 +17,14 @@ type Props = {
   ) => string;
 };
 
-export const TopCategoriesList = ({ thisMonthTxs, formatCurrency }: Props) => {
+export const TopCategoriesList = ({
+  thisMonthTxs,
+  isLoading,
+  formatCurrency,
+}: Props) => {
   const router = useRouter();
 
+  if (isLoading) return <TopCategoriesListSkeleton />;
   if (!thisMonthTxs) return null;
 
   const categoryMap = new Map<string, number>();
@@ -52,9 +61,9 @@ export const TopCategoriesList = ({ thisMonthTxs, formatCurrency }: Props) => {
 
   if (topCategories.length === 0) {
     return (
-      <View className="bg-card border border-border rounded-3xl overflow-hidden mb-8 p-4 items-center">
+      <Card className="overflow-hidden mb-8 items-center">
         <Text className="text-muted-foreground">No expenses this month</Text>
-      </View>
+      </Card>
     );
   }
 
@@ -68,7 +77,7 @@ export const TopCategoriesList = ({ thisMonthTxs, formatCurrency }: Props) => {
           This Month
         </Text>
       </View>
-      <View className="bg-card border border-border rounded-3xl overflow-hidden mb-8">
+      <Card className="overflow-hidden mb-8">
         {topCategories.map((cat, idx, arr) => {
           const Icon = cat.icon;
           const isLast = idx === arr.length - 1;
@@ -94,12 +103,7 @@ export const TopCategoriesList = ({ thisMonthTxs, formatCurrency }: Props) => {
                   <Text className="text-muted-foreground text-xs mb-2">
                     {cat.sub}
                   </Text>
-                  <View className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                    <View
-                      className="h-full bg-primary rounded-full"
-                      style={{ width: `${cat.pct}%` }}
-                    />
-                  </View>
+                  <Progress value={cat.pct} className="h-1.5 bg-secondary" />
                 </View>
 
                 <View className="items-end">
@@ -116,7 +120,7 @@ export const TopCategoriesList = ({ thisMonthTxs, formatCurrency }: Props) => {
             </View>
           );
         })}
-      </View>
+      </Card>
     </>
   );
 };

@@ -1,5 +1,5 @@
 import { desc } from "drizzle-orm";
-import { BotIcon, SendIcon } from "lucide-react-native";
+import { SendIcon } from "lucide-react-native";
 import { useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+import { Skeleton } from "@/components/ui/skeleton";
 import { db } from "@/db/client";
 import { transactions } from "@/db/schema";
 import {
@@ -114,13 +114,9 @@ const AskPennyScreen = () => {
               ))}
 
               {isThinking && (
-                <View className="bg-secondary p-4 rounded-2xl rounded-tl-sm self-start max-w-[85%]">
-                  <View className="flex-row items-center gap-2">
-                    <BotIcon size={16} className="text-primary" />
-                    <Text className="text-muted-foreground text-xs font-medium">
-                      Executing local SQL query...
-                    </Text>
-                  </View>
+                <View className="bg-secondary p-4 rounded-2xl rounded-tl-sm self-start max-w-[85%] gap-2">
+                  <Skeleton className="h-3 w-40 rounded" />
+                  <Skeleton className="h-3 w-28 rounded" />
                 </View>
               )}
             </View>
@@ -133,13 +129,14 @@ const AskPennyScreen = () => {
               className="flex-1 px-4 h-10 text-foreground"
               placeholder="Ask anything about your finances..."
               placeholderTextColor="#A69C8D"
+              editable={!isThinking}
               onSubmitEditing={handleSend}
             />
             <Button
               size="icon"
               className="rounded-full h-10 w-10"
               onPress={handleSend}
-              disabled={!input.trim()}
+              disabled={isThinking || !input.trim()}
             >
               <SendIcon size={18} className="text-primary-foreground" />
             </Button>

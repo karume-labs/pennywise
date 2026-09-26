@@ -1,14 +1,32 @@
 import { PlusIcon } from "lucide-react-native";
 import { Pressable, View } from "react-native";
+import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Skeleton, skeletonKeys } from "@/components/ui/skeleton";
 import { Text } from "@/components/ui/text";
 import type { budgets, transactions } from "@/db/schema";
 
 type Transaction = typeof transactions.$inferSelect;
 type Budget = typeof budgets.$inferSelect;
 
+const SKELETON_BUDGET_COUNT = 2;
+
+const BudgetRowSkeleton = () => (
+  <View className="gap-2">
+    <View className="flex-row justify-between items-end">
+      <Skeleton className="h-4 w-24 rounded" />
+      <Skeleton className="h-3 w-20 rounded" />
+    </View>
+    <View className="h-2 w-full bg-muted rounded-full overflow-hidden">
+      <Skeleton className="h-full w-1/3 rounded-full" />
+    </View>
+  </View>
+);
+
 type Props = {
   thisMonthTxs: Transaction[] | undefined;
   budgets: Budget[] | undefined;
+  isLoading: boolean;
   formatCurrency: (amount: number) => string;
   onAdd: () => void;
 };
@@ -16,6 +34,7 @@ type Props = {
 export const BudgetsList = ({
   thisMonthTxs,
   budgets,
+  isLoading,
   formatCurrency,
   onAdd,
 }: Props) => {
@@ -40,8 +59,12 @@ export const BudgetsList = ({
           <PlusIcon size={20} className="text-primary" />
         </Pressable>
       </View>
-      <View className="bg-card rounded-2xl border border-border p-4 gap-6">
-        {!budgets || budgets.length === 0 ? (
+      <Card>
+        {isLoading ? (
+          skeletonKeys(SKELETON_BUDGET_COUNT).map((key) => (
+            <BudgetRowSkeleton key={key} />
+          ))
+        ) : budgets === undefined || budgets.length === 0 ? (
           <Text className="text-muted-foreground text-center py-4">
             No budgets set. Tap + to add one.
           </Text>
@@ -76,17 +99,12 @@ export const BudgetsList = ({
                     {formatCurrency(budget.amountLimit)}
                   </Text>
                 </View>
-                <View className="h-2 w-full bg-muted rounded-full overflow-hidden">
-                  <View
-                    className={`h-full ${progressColor} rounded-full`}
-                    style={{ width: `${progress}%` }}
-                  />
-                </View>
+                <Progress value={progress} indicatorClassName={progressColor} />
               </View>
             );
           })
         )}
-      </View>
+      </Card>
     </View>
   );
 };
