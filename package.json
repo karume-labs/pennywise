@@ -110,6 +110,15 @@
     "typescript": "~6.0.3"
   },
   "private": true,
+  "react-native-executorch": {
+    "backends": [
+      "xnnpack"
+    ],
+    "libs": []
+  },
+  "trustedDependencies": [
+    "react-native-executorch"
+  ],
   "patchedDependencies": {
     "react-native-get-sms-android@2.1.0": "patches/react-native-get-sms-android@2.1.0.patch"
   }

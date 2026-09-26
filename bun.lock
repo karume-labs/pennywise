@@ -85,6 +85,9 @@
       },
     },
   },
+  "trustedDependencies": [
+    "react-native-executorch",
+  ],
   "patchedDependencies": {
     "react-native-get-sms-android@2.1.0": "patches/react-native-get-sms-android@2.1.0.patch",
   },
