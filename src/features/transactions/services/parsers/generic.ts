@@ -7,7 +7,7 @@ import type { ParsedTransaction } from "./types";
 export const parseGenericSms = (body: string): ParsedTransaction | null => {
   // Extract amount
   const amountMatch = body.match(
-    /(?:KES|Ksh|Kshs\.?|KShs)\s*([\d,]+(?:\.\d{2})?)/i,
+    /(?:KES|Ksh|Kshs\.?|KShs|USD|\$|GBP|£|EUR|€)\s*([\d,]+(?:\.\d{2})?)/i,
   );
   if (!amountMatch) return null;
 
@@ -44,7 +44,7 @@ export const parseGenericSms = (body: string): ParsedTransaction | null => {
   // Try to find balance
   let balance = 0;
   const balMatch = body.match(
-    /(?:Bal|Balance).*?(?:KES|Ksh)\s*([\d,]+(?:\.\d{2})?)/i,
+    /(?:Bal|Balance).*?(?:KES|Ksh|Kshs\.?|KShs|USD|\$|GBP|£|EUR|€)\s*([\d,]+(?:\.\d{2})?)/i,
   );
   if (balMatch) {
     balance = parseFloat(balMatch[1].replace(/,/g, ""));
