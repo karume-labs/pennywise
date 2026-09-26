@@ -11,6 +11,7 @@ import {
   DatabaseIcon,
   EyeOffIcon,
   FileDownIcon,
+  FileSpreadsheetIcon,
   InfoIcon,
   LockIcon,
   ShieldAlertIcon,
@@ -67,6 +68,42 @@ const SettingsScreen = () => {
     } catch (error) {
       console.error(error);
       showAlert("Error", "Failed to backup database");
+    }
+  };
+
+  const handleExportCSV = async () => {
+    try {
+      const txs = await db.select().from(transactions);
+      if (txs.length === 0) {
+        showAlert("No Data", "There are no transactions to export.");
+        return;
+      }
+
+      const header = "Date,Merchant,Amount,Type,Category,Fee\n";
+      const rows = txs
+        .map((tx) => {
+          const merchant = `"${tx.merchantOrSender?.replace(/"/g, '""') || ""}"`;
+          const category = `"${tx.category || ""}"`;
+          return `${new Date(tx.date).toISOString().split("T")[0]},${merchant},${tx.amount},${tx.type},${category},${tx.transactionFee || 0}`;
+        })
+        .join("\n");
+
+      const fileUri = `${FileSystem.documentDirectory}transactions_export.csv`;
+      await FileSystem.writeAsStringAsync(fileUri, header + rows, {
+        encoding: FileSystem.EncodingType.UTF8,
+      });
+
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(fileUri, {
+          mimeType: "text/csv",
+          dialogTitle: "Export Transactions CSV",
+        });
+      } else {
+        showAlert("Error", "Sharing is not available on this device");
+      }
+    } catch (error) {
+      console.error(error);
+      showAlert("Error", "Failed to export CSV");
     }
   };
 
@@ -149,6 +186,20 @@ const SettingsScreen = () => {
             Data & Backup
           </Text>
           <View className="bg-card rounded-2xl border border-border overflow-hidden mb-8">
+            <Button
+              variant="ghost"
+              className="flex-row items-center justify-between p-4 h-auto border-b border-border/50 rounded-none"
+              onPress={handleExportCSV}
+            >
+              <View className="flex-row items-center gap-3">
+                <View className="bg-primary/10 p-2 rounded-full">
+                  <FileSpreadsheetIcon size={20} className="text-primary" />
+                </View>
+                <Text className="text-foreground font-medium">Export CSV</Text>
+              </View>
+              <FileDownIcon size={20} className="text-muted-foreground" />
+            </Button>
+
             <Button
               variant="ghost"
               className="flex-row items-center justify-between p-4 h-auto border-b border-border/50 rounded-none"

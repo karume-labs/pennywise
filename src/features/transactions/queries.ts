@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/db/client";
-import { transactions } from "@/db/schema";
+import { budgets, subscriptions, transactions } from "@/db/schema";
 
 export const recentTransactionsQuery = db
   .select()
@@ -24,3 +24,11 @@ export const categoryTransactionsQuery = (categoryId: string) =>
     .from(transactions)
     .where(eq(transactions.category, categoryId))
     .orderBy(desc(transactions.date));
+
+export const allBudgetsQuery = db.select().from(budgets);
+
+export const activeSubscriptionsQuery = db
+  .select()
+  .from(subscriptions)
+  .where(eq(subscriptions.status, "active"))
+  .orderBy(desc(subscriptions.amount));

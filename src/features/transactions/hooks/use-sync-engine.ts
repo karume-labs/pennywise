@@ -54,6 +54,8 @@ export const useSyncEngine = () => {
                   date: parsed.date,
                   transactionFee: parsed.transactionFee,
                   accountBalance: parsed.accountBalance,
+                  originalCurrency: parsed.originalCurrency,
+                  originalAmount: parsed.originalAmount,
                   rawSms: msg.body,
                   aiConfidence: 0, // Default to 0 until categorized by AI
                 });

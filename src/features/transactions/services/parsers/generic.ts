@@ -7,11 +7,33 @@ import type { ParsedTransaction } from "./types";
 export const parseGenericSms = (body: string): ParsedTransaction | null => {
   // Extract amount
   const amountMatch = body.match(
-    /(?:KES|Ksh|Kshs\.?|KShs|USD|\$|GBP|£|EUR|€)\s*([\d,]+(?:\.\d{2})?)/i,
+    /(KES|Ksh|Kshs\.?|KShs|USD|\$|GBP|£|EUR|€)\s*([\d,]+(?:\.\d{2})?)/i,
   );
   if (!amountMatch) return null;
 
-  const amount = parseFloat(amountMatch[1].replace(/,/g, ""));
+  const currencyRaw = amountMatch[1].toUpperCase();
+  let currency = "KES";
+  if (currencyRaw.includes("USD") || currencyRaw.includes("$"))
+    currency = "USD";
+  if (currencyRaw.includes("GBP") || currencyRaw.includes("£"))
+    currency = "GBP";
+  if (currencyRaw.includes("EUR") || currencyRaw.includes("€"))
+    currency = "EUR";
+
+  const originalAmount = parseFloat(amountMatch[2].replace(/,/g, ""));
+  let amount = originalAmount;
+
+  // Mock daily forex rates
+  const forexRates: Record<string, number> = {
+    USD: 130.5,
+    GBP: 165.2,
+    EUR: 140.8,
+    KES: 1,
+  };
+
+  if (currency !== "KES") {
+    amount = originalAmount * (forexRates[currency] || 1);
+  }
 
   // Determine type based on keywords
   const isExpense =
@@ -58,5 +80,7 @@ export const parseGenericSms = (body: string): ParsedTransaction | null => {
     date: new Date(),
     transactionFee: 0,
     accountBalance: balance,
+    originalCurrency: currency,
+    originalAmount: originalAmount,
   };
 };

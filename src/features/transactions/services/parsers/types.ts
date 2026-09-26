@@ -7,4 +7,6 @@ export type ParsedTransaction = {
   transactionFee?: number;
   accountBalance?: number;
   source?: string;
+  originalCurrency?: string;
+  originalAmount?: number;
 };
