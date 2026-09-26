@@ -45,9 +45,59 @@ describe("M-PESA SMS Parser", () => {
     expect(result?.transactionFee).toBe(0);
   });
 
-  test("returns null for unknown formats", () => {
+  test("returns null for non-financial formats", () => {
     const sms = "Dear Customer, your balance is low.";
     const result = parseFinancialSms(sms);
     expect(result).toBeNull();
+  });
+});
+
+describe("Equity Bank SMS Parser", () => {
+  test("parses a debit transaction", () => {
+    const sms =
+      "Dear Customer, KES 1,500.00 has been debited from your A/C ...012 on 26/09/2026 at 08:00 via POS at NAIVAS. Avail Bal: KES 10,000.00.";
+    const result = parseFinancialSms(sms);
+    expect(result).not.toBeNull();
+    expect(result?.amount).toBe(1500);
+    expect(result?.merchantOrSender).toBe("NAIVAS");
+    expect(result?.type).toBe("EXPENSE");
+    expect(result?.accountBalance).toBe(10000);
+    expect(result?.source).toBe("EQUITY_BANK");
+  });
+
+  test("parses a credit transaction", () => {
+    const sms =
+      "Dear Customer, KES 5,000.00 has been credited to your A/C ...012 on 25/09/2026 at 14:00 by JOHN DOE. Avail Bal: KES 15,000.00.";
+    const result = parseFinancialSms(sms);
+    expect(result).not.toBeNull();
+    expect(result?.amount).toBe(5000);
+    expect(result?.merchantOrSender).toBe("JOHN DOE");
+    expect(result?.type).toBe("INCOME");
+    expect(result?.accountBalance).toBe(15000);
+    expect(result?.source).toBe("EQUITY_BANK");
+  });
+});
+
+describe("Generic Fallback SMS Parser", () => {
+  test("parses a foreign currency USD expense", () => {
+    const sms =
+      "Alert: USD 45.99 was debited from your card ending 1234 on 26/09. Ref: AMZN123. Bal: USD 1,200.50";
+    const result = parseFinancialSms(sms);
+    expect(result).not.toBeNull();
+    expect(result?.amount).toBe(45.99);
+    expect(result?.type).toBe("EXPENSE");
+    expect(result?.accountBalance).toBe(1200.5);
+    expect(result?.source).toBe("GENERIC_BANK");
+  });
+
+  test("parses a generic KES income", () => {
+    const sms =
+      "You have received Ksh 12,000.00 from ALICE W. via PesaLink on 26/09.";
+    const result = parseFinancialSms(sms);
+    expect(result).not.toBeNull();
+    expect(result?.amount).toBe(12000);
+    expect(result?.type).toBe("INCOME");
+    expect(result?.merchantOrSender).toBe("ALICE W");
+    expect(result?.source).toBe("GENERIC_BANK");
   });
 });
