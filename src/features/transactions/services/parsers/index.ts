@@ -1,3 +1,5 @@
+import { parseEquitySms } from "./equity";
+import { parseGenericSms } from "./generic";
 import { parseMpesaSms } from "./mpesa";
 import type { ParsedTransaction } from "./types";
 
@@ -6,6 +8,14 @@ const parsers = [
   {
     name: "MPESA",
     parse: parseMpesaSms,
+  },
+  {
+    name: "EQUITY_BANK",
+    parse: parseEquitySms,
+  },
+  {
+    name: "GENERIC_BANK",
+    parse: parseGenericSms,
   },
 ];
 

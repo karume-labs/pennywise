@@ -3,11 +3,14 @@ import {
   BottomSheetModal,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import { eq } from "drizzle-orm";
 import { ArrowDownIcon } from "lucide-react-native";
-import { forwardRef } from "react";
-import { Pressable, Switch, View } from "react-native";
+import { forwardRef, useEffect, useState } from "react";
+import { Pressable, ScrollView, Switch, View } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { db } from "@/db/client";
+import { customRules, transactions } from "@/db/schema";
 
 export type Transaction = {
   id: string;
@@ -27,6 +30,54 @@ type Props = {
 
 export const TransactionDetailModal = forwardRef<BottomSheetModal, Props>(
   ({ selectedTx, createRule, setCreateRule }, ref) => {
+    const [isEditingCategory, setIsEditingCategory] = useState(false);
+    const [selectedCategory, setSelectedCategory] = useState<string>("");
+
+    useEffect(() => {
+      if (selectedTx) {
+        setSelectedCategory(selectedTx.category);
+        setIsEditingCategory(false);
+      }
+    }, [selectedTx]);
+
+    const handleUpdate = async () => {
+      if (!selectedTx) return;
+
+      // Update transaction category
+      await db
+        .update(transactions)
+        .set({
+          category: selectedCategory,
+          aiConfidence: 1.0, // Manual override sets high confidence
+        })
+        .where(eq(transactions.id, selectedTx.id));
+
+      // Create rule if checked
+      if (createRule) {
+        // Insert or ignore / replace logic. For simple SQLite:
+        await db.insert(customRules).values({
+          id: `rule_${Date.now()}`,
+          merchantPattern: selectedTx.merchant.toLowerCase(),
+          assignedCategory: selectedCategory,
+        });
+      }
+
+      if (ref && typeof ref !== "function" && ref.current) {
+        ref.current.dismiss();
+      }
+    };
+
+    const categories = [
+      "Groceries",
+      "Transport",
+      "Utilities",
+      "Dining",
+      "Shopping",
+      "Entertainment",
+      "Healthcare",
+      "General",
+    ];
+
     return (
       <BottomSheetModal
         ref={ref}
@@ -70,21 +121,56 @@ export const TransactionDetailModal = forwardRef<BottomSheetModal, Props>(
             <Text className="text-muted-foreground text-xs uppercase tracking-wider font-semibold">
               Assigned Category
             </Text>
-            <Pressable className="bg-background border border-border rounded-xl px-4 py-3 flex-row items-center justify-between">
+            <Pressable
+              onPress={() => setIsEditingCategory(!isEditingCategory)}
+              className="bg-background border border-border rounded-xl px-4 py-3 flex-row items-center justify-between"
+            >
               <View className="flex-row items-center gap-2">
                 <Text className="text-foreground font-medium">
-                  {selectedTx?.category}
+                  {selectedCategory}
                 </Text>
-                {selectedTx?.aiConfidence && selectedTx.aiConfidence < 0.5 && (
-                  <View className="bg-amber-500/20 px-1.5 py-0.5 rounded">
-                    <Text className="text-amber-500 text-[10px] font-bold">
-                      LOW CONFIDENCE
-                    </Text>
-                  </View>
-                )}
+                {selectedTx?.aiConfidence &&
+                  selectedTx.aiConfidence < 0.5 &&
+                  selectedCategory === selectedTx.category && (
+                    <View className="bg-amber-500/20 px-1.5 py-0.5 rounded">
+                      <Text className="text-amber-500 text-[10px] font-bold">
+                        LOW CONFIDENCE
+                      </Text>
+                    </View>
+                  )}
               </View>
               <ArrowDownIcon size={16} className="text-muted-foreground" />
             </Pressable>
+
+            {isEditingCategory && (
+              <ScrollView
+                className="max-h-40 bg-card rounded-xl border border-border mt-1"
+                nestedScrollEnabled={true}
+              >
+                {categories.map((cat) => (
+                  <Pressable
+                    key={cat}
+                    onPress={() => {
+                      setSelectedCategory(cat);
+                      setIsEditingCategory(false);
+                    }}
+                    className={`px-4 py-3 border-b border-border/50 ${
+                      selectedCategory === cat ? "bg-primary/20" : ""
+                    }`}
+                  >
+                    <Text
+                      className={`${
+                        selectedCategory === cat
+                          ? "text-primary font-bold"
+                          : "text-foreground font-medium"
+                      }`}
+                    >
+                      {cat}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            )}
           </View>
 
           <View className="flex-row items-center justify-between bg-card rounded-xl p-4 border border-border mt-2">
@@ -104,14 +190,7 @@ export const TransactionDetailModal = forwardRef<BottomSheetModal, Props>(
             />
           </View>
 
-          <Button
-            className="bg-primary w-full mt-2"
-            onPress={() => {
-              if (ref && typeof ref !== "function" && ref.current) {
-                ref.current.dismiss();
-              }
-            }}
-          >
+          <Button className="bg-primary w-full mt-2" onPress={handleUpdate}>
             <Text className="text-primary-foreground font-medium">
               Update Transaction
             </Text>
