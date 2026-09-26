@@ -36,7 +36,8 @@
           "faceIDPermission": "Allow Pennywise to use Face ID to unlock your finances."
         }
       ],
-      "expo-status-bar"
+      "expo-status-bar",
+      "@kesha-antonov/react-native-background-downloader"
     ],
     "experiments": {
       "typedRoutes": true

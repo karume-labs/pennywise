@@ -8,6 +8,7 @@
         "@expo-google-fonts/inter": "^0.4.2",
         "@expo-google-fonts/rye": "^0.4.1",
         "@gorhom/bottom-sheet": "^5.2.14",
+        "@kesha-antonov/react-native-background-downloader": "^4.6.3",
         "@rn-primitives/accordion": "^1.5.2",
         "@rn-primitives/alert-dialog": "^1.5.2",
         "@rn-primitives/aspect-ratio": "^1.5.2",
@@ -417,6 +418,8 @@
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.6.0", "", {}, "sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw=="],
 
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
+
+    "@kesha-antonov/react-native-background-downloader": ["@kesha-antonov/react-native-background-downloader@4.6.3", "", { "peerDependencies": { "react-native": ">=0.57.0" } }, "sha512-0ZJp9m23ym7RwbFMhuPVYu3oo7eCs6q5XaGcgpx5nCV8BRvCsSY35FwtIyb2Q9j2H2Ugqqq8yxLFdofelHEuSg=="],
 
     "@radix-ui/number": ["@radix-ui/number@1.1.3", "", {}, "sha512-Road2bidD0uu/1BGDOWNdPI06g0lIRy6IF9GZcIrDK2KGItfor8IQwQa+yM2ERgHM1MmHxaxpTzk0/Jp42lNfA=="],
 
