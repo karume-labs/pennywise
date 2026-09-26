@@ -1,10 +1,36 @@
 import { eq } from "drizzle-orm";
 import { useCallback, useEffect, useState } from "react";
-import { AppState, type AppStateStatus } from "react-native";
+import {
+  AppState,
+  type AppStateStatus,
+  PermissionsAndroid,
+  Platform,
+} from "react-native";
 import SmsAndroid from "react-native-get-sms-android";
 import { db } from "@/db/client";
 import { transactions } from "@/db/schema";
 import { parseFinancialSms } from "@/features/transactions/services/parsers";
+
+const SMS_PERMISSION = PermissionsAndroid.PERMISSIONS.READ_SMS;
+
+/**
+ * Reading the SMS provider throws a SecurityException without `READ_SMS`, so the
+ * permission has to be granted before `SmsAndroid.list` is ever called.
+ */
+const requestSmsPermission = async (): Promise<boolean> => {
+  if (Platform.OS !== "android") return false;
+  if (await PermissionsAndroid.check(SMS_PERMISSION)) return true;
+
+  const result = await PermissionsAndroid.request(SMS_PERMISSION, {
+    title: "Allow SMS access",
+    message:
+      "Pennywise reads your inbox to turn bank and M-PESA messages into transactions.",
+    buttonPositive: "Allow",
+    buttonNegative: "Not now",
+  });
+
+  return result === PermissionsAndroid.RESULTS.GRANTED;
+};
 
 export const useSyncEngine = () => {
   const [isSyncing, setIsSyncing] = useState(false);
@@ -15,6 +41,13 @@ export const useSyncEngine = () => {
     setIsSyncing(true);
 
     try {
+      // 0. Bail out early if we are not allowed to read the SMS provider
+      if (!(await requestSmsPermission())) {
+        console.log("Sync skipped: READ_SMS permission not granted.");
+        setIsSyncing(false);
+        return;
+      }
+
       // 1. Get last synced timestamp from local storage (or DB)
       // For now, we will just sync the last 7 days if no timestamp is present
       const minDate = lastSyncDate ?? Date.now() - 7 * 24 * 60 * 60 * 1000;

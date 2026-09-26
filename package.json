@@ -108,5 +108,8 @@
     "lefthook": "^2.1.14",
     "typescript": "~6.0.3"
   },
-  "private": true
+  "private": true,
+  "patchedDependencies": {
+    "react-native-get-sms-android@2.1.0": "patches/react-native-get-sms-android@2.1.0.patch"
+  }
 }

@@ -1,0 +1,232 @@
+diff --git a/.gitattributes b/.gitattributes
+old mode 100644
+new mode 100755
+diff --git a/LICENSE.txt b/LICENSE.txt
+old mode 100644
+new mode 100755
+diff --git a/README.md b/README.md
+old mode 100644
+new mode 100755
+diff --git a/android/build.gradle b/android/build.gradle
+old mode 100644
+new mode 100755
+index 0de40fc7b6baf2dc1cfa016c6cd3fe176fe61f7b..8535bc910bb1cdea0324604770c5afd1ec6f15b5
+--- a/android/build.gradle
++++ b/android/build.gradle
+@@ -1,15 +1,4 @@
+ 
+-buildscript {
+-    repositories {
+-        google()
+-        jcenter()
+-    }
+-
+-    dependencies {
+-        classpath 'com.android.tools.build:gradle:3.3.1'
+-    }
+-}
+-
+ apply plugin: 'com.android.library'
+ 
+ def safeExtGet(prop, fallback) {
+@@ -17,7 +6,10 @@ def safeExtGet(prop, fallback) {
+ }
+ 
+ android {
+-    compileSdkVersion safeExtGet('compileSdkVersion', 28)
++    // AGP 8+ requires an explicit namespace; the library manifest declares package="com.react".
++    namespace "com.react"
++
++    compileSdkVersion safeExtGet('compileSdkVersion', 36)
+ 
+     defaultConfig {
+         minSdkVersion safeExtGet('minSdkVersion', 16)
+@@ -36,7 +28,7 @@ repositories {
+         // All of React Native (JS, Obj-C sources, Android binaries) is installed from npm
+         url "$rootDir/../node_modules/react-native/android"
+     }
+-    jcenter()
++    mavenCentral()
+ }
+ 
+ dependencies {
+diff --git a/android/src/main/AndroidManifest.xml b/android/src/main/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/android/src/main/java/com/react/SmsModule.java b/android/src/main/java/com/react/SmsModule.java
+old mode 100644
+new mode 100755
+diff --git a/android/src/main/java/com/react/SmsPackage.java b/android/src/main/java/com/react/SmsPackage.java
+old mode 100644
+new mode 100755
+diff --git a/example/.buckconfig b/example/.buckconfig
+old mode 100644
+new mode 100755
+diff --git a/example/.flowconfig b/example/.flowconfig
+old mode 100644
+new mode 100755
+diff --git a/example/.gitattributes b/example/.gitattributes
+old mode 100644
+new mode 100755
+diff --git a/example/.watchmanconfig b/example/.watchmanconfig
+old mode 100644
+new mode 100755
+diff --git a/example/App.js b/example/App.js
+old mode 100644
+new mode 100755
+diff --git a/example/__tests__/App.js b/example/__tests__/App.js
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/BUCK b/example/android/app/BUCK
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/build.gradle b/example/android/app/build.gradle
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/build_defs.bzl b/example/android/app/build_defs.bzl
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/proguard-rules.pro b/example/android/app/proguard-rules.pro
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/debug/AndroidManifest.xml b/example/android/app/src/debug/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/debug/res/xml-v28/react_native_config.xml b/example/android/app/src/debug/res/xml-v28/react_native_config.xml
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/AndroidManifest.xml b/example/android/app/src/main/AndroidManifest.xml
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/java/com/example/MainActivity.java b/example/android/app/src/main/java/com/example/MainActivity.java
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/java/com/example/MainApplication.java b/example/android/app/src/main/java/com/example/MainApplication.java
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png b/example/android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png b/example/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png b/example/android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png b/example/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png b/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png b/example/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png b/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png b/example/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png b/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png b/example/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/values/strings.xml b/example/android/app/src/main/res/values/strings.xml
+old mode 100644
+new mode 100755
+diff --git a/example/android/app/src/main/res/values/styles.xml b/example/android/app/src/main/res/values/styles.xml
+old mode 100644
+new mode 100755
+diff --git a/example/android/build.gradle b/example/android/build.gradle
+old mode 100644
+new mode 100755
+diff --git a/example/android/gradle/wrapper/gradle-wrapper.jar b/example/android/gradle/wrapper/gradle-wrapper.jar
+old mode 100644
+new mode 100755
+diff --git a/example/android/gradle/wrapper/gradle-wrapper.properties b/example/android/gradle/wrapper/gradle-wrapper.properties
+old mode 100644
+new mode 100755
+diff --git a/example/android/gradle.properties b/example/android/gradle.properties
+old mode 100644
+new mode 100755
+diff --git a/example/android/gradlew.bat b/example/android/gradlew.bat
+old mode 100644
+new mode 100755
+diff --git a/example/android/keystores/BUCK b/example/android/keystores/BUCK
+old mode 100644
+new mode 100755
+diff --git a/example/android/keystores/debug.keystore.properties b/example/android/keystores/debug.keystore.properties
+old mode 100644
+new mode 100755
+diff --git a/example/android/settings.gradle b/example/android/settings.gradle
+old mode 100644
+new mode 100755
+diff --git a/example/app.json b/example/app.json
+old mode 100644
+new mode 100755
+diff --git a/example/babel.config.js b/example/babel.config.js
+old mode 100644
+new mode 100755
+diff --git a/example/index.js b/example/index.js
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example/AppDelegate.h b/example/ios/example/AppDelegate.h
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example/AppDelegate.m b/example/ios/example/AppDelegate.m
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example/Base.lproj/LaunchScreen.xib b/example/ios/example/Base.lproj/LaunchScreen.xib
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example/Images.xcassets/AppIcon.appiconset/Contents.json b/example/ios/example/Images.xcassets/AppIcon.appiconset/Contents.json
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example/Images.xcassets/Contents.json b/example/ios/example/Images.xcassets/Contents.json
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example/Info.plist b/example/ios/example/Info.plist
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example/main.m b/example/ios/example/main.m
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example-tvOS/Info.plist b/example/ios/example-tvOS/Info.plist
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example-tvOSTests/Info.plist b/example/ios/example-tvOSTests/Info.plist
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example.xcodeproj/project.pbxproj b/example/ios/example.xcodeproj/project.pbxproj
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example.xcodeproj/xcshareddata/xcschemes/example-tvOS.xcscheme b/example/ios/example.xcodeproj/xcshareddata/xcschemes/example-tvOS.xcscheme
+old mode 100644
+new mode 100755
+diff --git a/example/ios/example.xcodeproj/xcshareddata/xcschemes/example.xcscheme b/example/ios/example.xcodeproj/xcshareddata/xcschemes/example.xcscheme
+old mode 100644
+new mode 100755
+diff --git a/example/ios/exampleTests/Info.plist b/example/ios/exampleTests/Info.plist
+old mode 100644
+new mode 100755
+diff --git a/example/ios/exampleTests/exampleTests.m b/example/ios/exampleTests/exampleTests.m
+old mode 100644
+new mode 100755
+diff --git a/example/package-lock.json b/example/package-lock.json
+old mode 100644
+new mode 100755
+diff --git a/example/package.json b/example/package.json
+old mode 100644
+new mode 100755
+diff --git a/example/yarn.lock b/example/yarn.lock
+old mode 100644
+new mode 100755
+diff --git a/index.js b/index.js
+old mode 100644
+new mode 100755
+diff --git a/package.json b/package.json
+old mode 100644
+new mode 100755

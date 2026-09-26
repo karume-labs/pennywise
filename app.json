@@ -10,14 +10,15 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.pennywise"
+      "bundleIdentifier": "com.karume-labs.pennywise"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./public/core/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.pennywise"
+      "package": "com.karume_labs.pennywise",
+      "permissions": ["READ_SMS"]
     },
     "plugins": [
       "expo-router",
