@@ -4,7 +4,7 @@ import {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import * as FileSystem from "expo-file-system/legacy";
-import { useRouter } from "expo-router";
+import { type Href, useRouter } from "expo-router";
 import * as Sharing from "expo-sharing";
 import {
   ChevronRightIcon,
@@ -15,6 +15,7 @@ import {
   InfoIcon,
   LockIcon,
   ShieldAlertIcon,
+  SlidersIcon,
   TrashIcon,
 } from "lucide-react-native";
 import { useRef, useState } from "react";
@@ -180,6 +181,27 @@ const SettingsScreen = () => {
                 trackColor={{ true: "#B5652F", false: "#3A2E22" }}
               />
             </View>
+
+            <Button
+              variant="ghost"
+              className="flex-row items-center justify-between p-4 h-auto border-t border-border/50 rounded-none"
+              onPress={() => router.push("/settings/rules" as Href)}
+            >
+              <View className="flex-row items-center gap-3">
+                <View className="bg-primary/10 p-2 rounded-full">
+                  <SlidersIcon size={20} className="text-primary" />
+                </View>
+                <View>
+                  <Text className="text-foreground font-medium">
+                    Custom Rules
+                  </Text>
+                  <Text className="text-muted-foreground text-xs">
+                    Override AI categorization
+                  </Text>
+                </View>
+              </View>
+              <ChevronRightIcon size={20} className="text-muted-foreground" />
+            </Button>
           </View>
 
           <Text className="text-muted-foreground font-semibold mb-2 ml-2">

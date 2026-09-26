@@ -5,7 +5,7 @@ import {
   models,
 } from "react-native-executorch";
 import { db } from "@/db/client";
-import { transactions } from "@/db/schema";
+import { customRules, transactions } from "@/db/schema";
 
 class LocalLlmService {
   private isInitializing = false;
@@ -82,17 +82,39 @@ Answer only with the category name.`;
       .where(eq(transactions.category, "Uncategorized"))
       .limit(10);
 
+    if (pending.length === 0) return;
+
+    // Fetch custom rules
+    const rules = await db.select().from(customRules);
+
     for (const tx of pending) {
-      const category = await this.categorizeTransaction(
-        tx.merchantOrSender ?? "",
-        tx.rawSms ?? "",
-      );
+      let category = "Uncategorized";
+      let confidence = 0;
+      const merchant = tx.merchantOrSender?.toLowerCase() ?? "";
+
+      // Check rules first (deterministic)
+      for (const rule of rules) {
+        if (merchant.includes(rule.merchantPattern.toLowerCase())) {
+          category = rule.assignedCategory;
+          confidence = 1.0; // 100% confidence for manual rules
+          break;
+        }
+      }
+
+      // Fallback to AI (stochastic)
+      if (category === "Uncategorized") {
+        category = await this.categorizeTransaction(
+          tx.merchantOrSender ?? "",
+          tx.rawSms ?? "",
+        );
+        confidence = 0.85;
+      }
 
       await db
         .update(transactions)
         .set({
-          category: category,
-          aiConfidence: 0.85,
+          category,
+          aiConfidence: confidence,
         })
         .where(eq(transactions.id, tx.id));
     }

@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { db } from "@/db/client";
-import { budgets, subscriptions, transactions } from "@/db/schema";
+import { budgets, customRules, subscriptions, transactions } from "@/db/schema";
 
 export const recentTransactionsQuery = db
   .select()
@@ -32,3 +32,5 @@ export const activeSubscriptionsQuery = db
   .from(subscriptions)
   .where(eq(subscriptions.status, "active"))
   .orderBy(desc(subscriptions.amount));
+
+export const allRulesQuery = db.select().from(customRules);
