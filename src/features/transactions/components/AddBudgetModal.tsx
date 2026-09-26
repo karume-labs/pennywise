@@ -53,6 +53,8 @@ export const AddBudgetModal = forwardRef<BottomSheetModal>((_, ref) => {
 
   return (
     <BottomSheetModal
+      keyboardBehavior="extend"
+      keyboardBlurBehavior="restore"
       ref={ref}
       enableDynamicSizing={true}
       backgroundStyle={{ backgroundColor: "#2A2724" }}

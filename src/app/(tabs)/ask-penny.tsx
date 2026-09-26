@@ -1,7 +1,13 @@
 import { desc } from "drizzle-orm";
 import { BotIcon, SendIcon } from "lucide-react-native";
 import { useRef, useState } from "react";
-import { ScrollView, TextInput, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TextInput,
+  View,
+} from "react-native";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { db } from "@/db/client";
@@ -77,64 +83,70 @@ const AskPennyScreen = () => {
     }
   };
   return (
-    <View className="flex-1 bg-background">
-      <View className="flex-1 px-4 pt-6 pb-4">
-        <ScrollView
-          ref={scrollViewRef}
-          className="flex-1 mb-4"
-          showsVerticalScrollIndicator={false}
-          onContentSizeChange={() =>
-            scrollViewRef.current?.scrollToEnd({ animated: true })
-          }
-        >
-          <View className="gap-4">
-            {messages.map((msg) => (
-              <ChatBubble
-                key={msg.id}
-                msg={msg}
-                onAnimationComplete={(id) => {
-                  setMessages((prev) =>
-                    prev.map((m) =>
-                      m.id === id ? { ...m, isStreaming: false } : m,
-                    ),
-                  );
-                }}
-              />
-            ))}
-
-            {isThinking && (
-              <View className="bg-secondary p-4 rounded-2xl rounded-tl-sm self-start max-w-[85%]">
-                <View className="flex-row items-center gap-2">
-                  <BotIcon size={16} className="text-primary" />
-                  <Text className="text-muted-foreground text-xs font-medium">
-                    Executing local SQL query...
-                  </Text>
-                </View>
-              </View>
-            )}
-          </View>
-        </ScrollView>
-
-        <View className="flex-row items-center gap-2 bg-card border border-border p-2 rounded-full shadow-sm mt-auto">
-          <TextInput
-            value={input}
-            onChangeText={setInput}
-            className="flex-1 px-4 h-10 text-foreground"
-            placeholder="Ask anything about your finances..."
-            placeholderTextColor="#A69C8D"
-            onSubmitEditing={handleSend}
-          />
-          <Button
-            size="icon"
-            className="rounded-full h-10 w-10"
-            onPress={handleSend}
-            disabled={!input.trim()}
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+    >
+      <View className="flex-1 bg-background">
+        <View className="flex-1 px-4 pt-6 pb-4">
+          <ScrollView
+            ref={scrollViewRef}
+            className="flex-1 mb-4"
+            showsVerticalScrollIndicator={false}
+            onContentSizeChange={() =>
+              scrollViewRef.current?.scrollToEnd({ animated: true })
+            }
           >
-            <SendIcon size={18} className="text-primary-foreground" />
-          </Button>
+            <View className="gap-4">
+              {messages.map((msg) => (
+                <ChatBubble
+                  key={msg.id}
+                  msg={msg}
+                  onAnimationComplete={(id) => {
+                    setMessages((prev) =>
+                      prev.map((m) =>
+                        m.id === id ? { ...m, isStreaming: false } : m,
+                      ),
+                    );
+                  }}
+                />
+              ))}
+
+              {isThinking && (
+                <View className="bg-secondary p-4 rounded-2xl rounded-tl-sm self-start max-w-[85%]">
+                  <View className="flex-row items-center gap-2">
+                    <BotIcon size={16} className="text-primary" />
+                    <Text className="text-muted-foreground text-xs font-medium">
+                      Executing local SQL query...
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          </ScrollView>
+
+          <View className="flex-row items-center gap-2 bg-card border border-border p-2 rounded-full shadow-sm mt-auto">
+            <TextInput
+              value={input}
+              onChangeText={setInput}
+              className="flex-1 px-4 h-10 text-foreground"
+              placeholder="Ask anything about your finances..."
+              placeholderTextColor="#A69C8D"
+              onSubmitEditing={handleSend}
+            />
+            <Button
+              size="icon"
+              className="rounded-full h-10 w-10"
+              onPress={handleSend}
+              disabled={!input.trim()}
+            >
+              <SendIcon size={18} className="text-primary-foreground" />
+            </Button>
+          </View>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 

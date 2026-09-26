@@ -33,7 +33,7 @@ export const CategoryPicker = ({
           <Text className="text-foreground font-medium">
             {selectedCategory}
           </Text>
-          {selectedTx?.aiConfidence &&
+          {selectedTx?.aiConfidence != null &&
             selectedTx.aiConfidence < 0.5 &&
             selectedCategory === selectedTx.category && (
               <View className="bg-amber-500/20 px-1.5 py-0.5 rounded">

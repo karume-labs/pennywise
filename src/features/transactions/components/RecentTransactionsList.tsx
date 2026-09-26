@@ -41,7 +41,7 @@ export const RecentTransactionsList = ({
             onPress={() => handleOpenTxModal(tx)}
             className="flex-row items-center justify-between bg-card p-4 rounded-2xl border border-border active:bg-muted/50"
           >
-            <View className="flex-row items-center gap-3">
+            <View className="flex-row items-center gap-3 flex-1 mr-2">
               <View
                 className={`w-10 h-10 rounded-full items-center justify-center ${tx.type === "EXPENSE" ? "bg-muted" : "bg-emerald-500/10"}`}
               >
@@ -51,13 +51,16 @@ export const RecentTransactionsList = ({
                   <ArrowDownIcon size={18} color="#10b981" />
                 )}
               </View>
-              <View>
+              <View className="flex-1">
                 <View className="flex-row items-center gap-2">
-                  <Text className="text-foreground font-medium">
+                  <Text
+                    className="text-foreground font-medium flex-shrink"
+                    numberOfLines={1}
+                  >
                     {tx.merchantOrSender}
                   </Text>
                   {tx.aiConfidence !== null && tx.aiConfidence < 0.5 && (
-                    <View className="bg-amber-500/20 px-1.5 py-0.5 rounded flex-row items-center gap-1">
+                    <View className="bg-amber-500/20 px-1.5 py-0.5 rounded flex-row items-center gap-1 flex-shrink-0">
                       <AlertCircleIcon size={10} color="#f59e0b" />
                       <Text className="text-amber-500 text-[10px] font-bold">
                         REVIEW
@@ -65,7 +68,10 @@ export const RecentTransactionsList = ({
                     </View>
                   )}
                 </View>
-                <Text className="text-muted-foreground text-xs">
+                <Text
+                  className="text-muted-foreground text-xs"
+                  numberOfLines={1}
+                >
                   {tx.category ?? "Uncategorized"} •{" "}
                   {new Date(tx.date).toLocaleDateString()}
                 </Text>
