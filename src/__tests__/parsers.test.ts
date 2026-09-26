@@ -17,6 +17,45 @@ describe("M-PESA SMS Parser", () => {
     expect(result?.transactionFee).toBe(22);
   });
 
+  test("parses the SMS date into local time components", () => {
+    const sms =
+      "QWE123RTY Confirmed. Ksh4,500.00 paid to Naivas Supermarket. on 21/9/23 at 10:24 AM. New M-PESA balance is Ksh15,000.00.";
+
+    const result = parseFinancialSms(sms);
+    expect(result?.date).toBeInstanceOf(Date);
+    // Optional chaining short-circuits the whole chain, so these are safe
+    // even when the SMS does not parse.
+    // Must be a real timestamp: an Invalid Date becomes NaN, which SQLite
+    // stores as NULL and the NOT NULL constraint on `date` rejects.
+    expect(Number.isNaN(result?.date.getTime())).toBe(false);
+
+    expect(result?.date.getFullYear()).toBe(2023);
+    expect(result?.date.getMonth()).toBe(8); // September, 0-indexed
+    expect(result?.date.getDate()).toBe(21);
+    expect(result?.date.getHours()).toBe(10);
+    expect(result?.date.getMinutes()).toBe(24);
+  });
+
+  test("does not mangle a 4-digit year into 4000s", () => {
+    const sms =
+      "QWE123RTY Confirmed. Ksh4,500.00 paid to Naivas Supermarket. on 21/9/2023 at 10:24 AM. New M-PESA balance is Ksh15,000.00.";
+
+    const result = parseFinancialSms(sms);
+    expect(result?.date.getFullYear()).toBe(2023);
+  });
+
+  test("handles 12 AM as midnight and 12 PM as noon", () => {
+    const midnight = parseFinancialSms(
+      "QWE123RTY Confirmed. Ksh4,500.00 paid to Naivas Supermarket. on 21/9/23 at 12:00 AM. New M-PESA balance is Ksh15,000.00.",
+    );
+    const noon = parseFinancialSms(
+      "QWE123RTY Confirmed. Ksh4,500.00 paid to Naivas Supermarket. on 21/9/23 at 12:00 PM. New M-PESA balance is Ksh15,000.00.",
+    );
+
+    expect(midnight?.date.getHours()).toBe(0);
+    expect(noon?.date.getHours()).toBe(12);
+  });
+
   test("parses a Send Money transaction", () => {
     const sms =
       "QWE123RTY Confirmed. Ksh1,500.00 sent to John Doe 0712345678 on 21/9/23 at 10:24 AM. New M-PESA balance is Ksh15,000.00. Transaction cost, Ksh 12.00.";

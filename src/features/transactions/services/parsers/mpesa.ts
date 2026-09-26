@@ -5,13 +5,27 @@ const parseAmount = (amountStr: string) =>
   parseFloat(amountStr.replace(/,/g, ""));
 
 // Basic date parser for M-PESA format: "21/9/23 at 10:24 AM"
+// Builds the Date from numeric parts rather than a formatted string: the old
+// `${y}-${m}-${d} ${time}` form is not ISO-8601, so it parses under V8 but
+// yields Invalid Date on Hermes, whose Date parser is stricter. That NaN
+// reached SQLite via getTime(), which stores NaN as NULL and tripped the
+// `transactions.date` NOT NULL constraint at runtime.
 const parseDate = (dateStr: string, timeStr: string) => {
-  const [d, m, y] = dateStr.split("/");
-  // M-PESA uses 2-digit years. Assuming 2000s
-  const year = parseInt(y, 10) + 2000;
-  return new Date(
-    `${year}-${m.padStart(2, "0")}-${d.padStart(2, "0")} ${timeStr}`,
-  );
+  const [day, month, rawYear] = dateStr.split("/").map(Number);
+  // M-PESA uses 2-digit years; tolerate a 4-digit year rather than assuming.
+  const year = rawYear < 100 ? rawYear + 2000 : rawYear;
+
+  const timeMatch = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+  const rawHours = timeMatch ? Number(timeMatch[1]) : 0;
+  const minutes = timeMatch ? Number(timeMatch[2]) : 0;
+  const meridiem = timeMatch?.[3]?.toUpperCase();
+
+  // On a 12-hour clock 12 AM is midnight (0) and 12 PM is noon (12).
+  let hours = rawHours;
+  if (meridiem === "PM") hours = (rawHours % 12) + 12;
+  if (meridiem === "AM") hours = rawHours % 12;
+
+  return new Date(year, month - 1, day, hours, minutes);
 };
 
 export const parseMpesaSms = (body: string): ParsedTransaction | null => {
